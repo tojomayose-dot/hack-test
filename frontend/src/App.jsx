@@ -1,40 +1,25 @@
-import { useEffect, useState } from 'react'
-import axios from 'axios'
+import { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import api from './services/api';
+import Register from './pages/Register';
 
 function App() {
-  const [message, setMessage] = useState("Connexion au serveur...")
+  const [status, setStatus] = useState({ loading: true, connected: false });
 
   useEffect(() => {
-    // On teste la communication avec le backend
-    axios.get('http://localhost:5000/api/items')
-      .then(res => {
-        setMessage("✅ Connexion au Backend réussie !")
-        console.log("Données reçues :", res.data)
-      })
-      .catch(err => {
-        setMessage("❌ Erreur : Le Backend ne répond pas.")
-        console.error(err)
-      })
-  }, [])
+    api.get('/stats')
+      .then(() => setStatus({ loading: false, connected: true }))
+      .catch(() => setStatus({ loading: false, connected: false }));
+  }, []);
 
   return (
-    <div style={{ textAlign: 'center', marginTop: '50px', fontFamily: 'sans-serif' }}>
-      <h1> Joyeuse apres paques les amis et bon dodo</h1>
-      <p style={{ fontSize: '1.2rem', color: message.includes('✅') ? 'green' : 'red' }}>
-        Status : {message}
-      </p>
-      <div style={{ padding: '20px', border: '1px solid #ccc', borderRadius: '8px', display: 'inline-block' }}>
-        <h3>Membres de l'équipe :</h3>
-        <ul style={{ listStyle: 'none', padding: 0 }}>
-          <li> Tojo </li>
-          <li> Max </li>
-          <li> Lili </li>
-          <li> Hans </li>
-          <li> Rose</li>
-        </ul>
-      </div>
-    </div>
-  )
+    <Router>
+      <Routes>
+        <Route path="/" element={<Register />} />
+        <Route path="/login" element={<div className="p-10 text-center font-bold">Page Login (H+20)</div>} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
