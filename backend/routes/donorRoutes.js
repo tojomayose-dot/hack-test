@@ -7,15 +7,15 @@ router.get('/search', async (req, res) => {
     try {
         const { bloodGroup } = req.query;
 
+        // SI AUCUN GROUPE N'EST PRÉCISÉ : On renvoie tout le monde
+        if (!bloodGroup) {
+            const allDonors = await User.find({ role: 'donor', isAvailable: true });
+            return res.json(allDonors);
+        }
+
         const compatibilityMap = {
             "O-": ["O-"],
-            "O+": ["O+", "O-"],
-            "A-": ["A-", "O-"],
-            "A+": ["A+", "A-", "O+", "O-"],
-            "B-": ["B-", "O-"],
-            "B+": ["B+", "B-", "O+", "O-"],
-            "AB-": ["AB-", "A-", "B-", "O-"],
-            "AB+": ["AB+", "AB-", "A+", "A-", "B+", "B-", "O+", "O-"]
+            // ... reste de ton map ...
         };
 
         const compatibleTypes = compatibilityMap[bloodGroup];

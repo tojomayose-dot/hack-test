@@ -28,6 +28,9 @@ app.use('/api/stats', statsRoutes);
 
 // Lancement serveur
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`🌍 Serveur Rakitra Ra opérationnel sur le port ${PORT}`);
+// On ajoute '0.0.0.0' pour ouvrir le serveur au réseau local
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🌍 Serveur Rakitra Ra opérationnel !`);
+    console.log(`📡 Local: http://localhost:${PORT}`);
+    console.log(`🔗 Réseau: http://VOTRE_IP_LOCALE:${PORT}`);
 });
