@@ -1,44 +1,74 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
-  {
-    // LE NUMÉRO DE TÉLÉPHONE DEVIENT L'IDENTIFIANT PRINCIPAL
+{
+    // Identifiant principal
     phone: {
-      type: String,
-      required: true,
-      unique: true, // Empêche deux comptes avec le même numéro
-      trim: true,
+        type: String,
+        required: true,
+        unique: true,
+        trim: true,
     },
-    password: { type: String, required: true },
 
-    // L'EMAIL DEVIENT OPTIONNEL
+    password: {
+        type: String,
+        required: true,
+    },
+
+    // Nom (important pour donneur ET hôpital)
+    name: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+
     email: {
-      type: String,
-      required: false, // Plus obligatoire
-      unique: false,
-      sparse: true, // Permet d'avoir plusieurs 'null' sans conflit d'index unique
+        type: String,
+        sparse: true,
+        trim: true,
     },
 
     role: {
-      type: String,
-      enum: ["donor", "hospital"],
-      required: true,
-    }, // [cite: 10, 23]
+        type: String,
+        enum: ["donor", "hospital"],
+        required: true,
+    },
 
-    location: { type: String, required: true }, // [cite: 10, 19]
+    location: {
+        type: String,
+        required: true,
+    },
 
-    // Spécifique au Donneur
-    bloodGroup: { type: String }, // [cite: 10, 11]
-    isAvailable: { type: Boolean, default: true }, // [cite: 13]
+    // Spécifique DONNEUR
+    bloodGroup: {
+        type: String,
+        enum: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
+        required: function () {
+            return this.role === "donor";
+        },
+    },
 
-    // Spécifique à l'Hôpital
-    hospitalName: { type: String },
-    location: { type: String },
+    isAvailable: {
+        type: Boolean,
+        default: true,
+    },
 
-    // Langue préférée pour l'interface et les SMS
-    language: { type: String, enum: ["fr", "mg"], default: "fr" }, // [cite: 15, 19]
-  },
-  { timestamps: true },
+    // Spécifique HÔPITAL
+    hospitalName: {
+        type: String,
+        required: function () {
+            return this.role === "hospital";
+        },
+    },
+
+    // Langue
+    language: {
+        type: String,
+        enum: ["fr", "mg"],
+        default: "fr",
+    },
+},
+{ timestamps: true }
 );
 
 module.exports = mongoose.model("User", userSchema);
