@@ -1,0 +1,45 @@
+/* Animation de fond pour un effet dynamique */
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.admin-container {
+    background: linear-gradient(-45deg, #0f172a, #1e293b, #1e3a8a, #0f172a);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    min-height: 100vh;
+}
+
+/* Effet de brillance sur la carte Admin */
+.admin-card {
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.admin-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Style des inputs focus */
+.admin-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+    background-color: #f8fafc;
+}
+
+/* Bouton Admin Premium */
+.admin-btn {
+    background: linear-gradient(90deg, #1e3a8a 0%, #3b82f6 100%);
+    border: none;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.admin-btn:hover {
+    filter: brightness(1.1);
+    letter-spacing: 2px;
+}

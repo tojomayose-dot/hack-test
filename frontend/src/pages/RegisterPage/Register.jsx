@@ -102,6 +102,14 @@ const Register = () => {
               required
             />
           </div>
+          <div className="text-center mt-6">
+            <button 
+              onClick={() => navigate('/admin')} 
+              className="text-xs text-slate-400 hover:text-blue-500 underline transition"
+            >
+              Accès Administration Hôpital
+            </button>
+          </div>
 
           <button
             type="submit"
