@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import api from './services/api';
 import Register from './pages/RegisterPage/Register';
-import AdminLogin from './pages/AdminLogin';
-import Dashboard from './pages/Dashboard';
+import AdminLogin from './pages/LoginPage/AdminLogin';
+import Dashboard from './pages/dashboardPage/Dashboard';
 
 function App() {
   const [status, setStatus] = useState({ loading: true, connected: false });
