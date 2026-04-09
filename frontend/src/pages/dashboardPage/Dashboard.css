@@ -1,0 +1,277 @@
+/* Dashboard.css - Version SaaS Premium 2026 */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --primary: #0f172a;    /* Bleu nuit très sombre */
+    --accent: #2563eb;     /* Bleu électrique Stripe */
+    --bg-app: #f1f5f9;     /* Gris très clair élégant */
+    --card-bg: #ffffff;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --radius: 12px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.02), 0 8px 24px rgba(149, 157, 165, 0.1);
+}
+
+/* On réinitialise pour éviter les conflits avec index.css */
+.rakitra-dashboard * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+}
+
+.rakitra-dashboard {
+    background-color: var(--bg-app);
+    min-height: 100vh;
+    color: var(--text-main);
+}
+
+/* TOP NAV - LOOK GLASSMORPHISM */
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 2rem;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav-brand {
+    font-weight: 800;
+    font-size: 1.25rem;
+    letter-spacing: -0.5px;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.brand-icon { color: var(--accent); }
+
+.hospital-badge {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* LAYOUT PRINCIPAL */
+.dashboard-content {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 2.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem;
+}
+
+/* SIDEBAR / CONTROL PANEL */
+.control-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.panel-card {
+    background: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+}
+
+.card-title {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    font-weight: 700;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* GRILLE BOUTONS SANGUINS */
+.blood-selector-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.blood-pill {
+    aspect-ratio: 1;
+    border: 1px solid var(--border);
+    background: #fff;
+    border-radius: 10px;
+    font-weight: 700;
+    color: var(--text-main);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.blood-pill:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-2px);
+}
+
+.blood-pill.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+}
+
+/* BARRE DE RECHERCHE */
+.search-field {
+    position: relative;
+    margin-top: 1.5rem;
+}
+
+.field-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+}
+
+.field-input {
+    width: 100%;
+    padding: 12px 12px 12px 40px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: #f8fafc;
+    transition: 0.2s;
+}
+
+.field-input:focus {
+    outline: none;
+    background: #fff;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* LISTE DES RÉSULTATS */
+.main-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.5px;
+}
+
+.results-count {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 2rem;
+}
+
+.donors-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.donor-list-item {
+    background: white;
+    padding: 1.25rem 1.75rem;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 60px 2fr 1.5fr 140px;
+    align-items: center;
+    gap: 20px;
+    transition: 0.2s;
+}
+
+.donor-list-item:hover {
+    border-color: var(--accent);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
+
+.blood-type-avatar {
+    width: 54px;
+    height: 54px;
+    background: #f1f5f9;
+    border-radius: 14px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.donor-core-info h4 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.info-meta {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* BOUTON ALERTER */
+.sms-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: 0.2s;
+}
+
+.sms-btn:hover {
+    background: #000;
+    transform: scale(1.02);
+}
+
+/* STATS MINI */
+.mini-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.stat-item {
+    padding: 12px;
+    border-radius: 10px;
+    text-align: center;
+    background: #f8fafc;
+    border: 1px solid var(--border);
+}
+
+.stat-item.critical { border-left: 4px solid #ef4444; }
+.stat-item.ok { border-left: 4px solid #22c55e; }
+
+.stat-value { font-weight: 800; font-size: 1.2rem; display: block; }
+.stat-label { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; }
+
+@media (max-width: 1100px) {
+    .dashboard-content { grid-template-columns: 1fr; }
+    .control-panel { display: grid; grid-template-columns: 1fr 1fr; }
+}
