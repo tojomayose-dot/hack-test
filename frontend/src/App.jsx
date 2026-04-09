@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import api from './services/api';
-import Register from './pages/Register';
+import Register from './pages/RegisterPage/Register';
 
 function App() {
   const [status, setStatus] = useState({ loading: true, connected: false });
