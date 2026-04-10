@@ -1,70 +1,99 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Heart, Phone, ArrowRight, Fingerprint } from 'lucide-react';
+import { Heart, Phone, ArrowRight, Fingerprint, ArrowLeft } from 'lucide-react';
 import api from '../../services/api';
 import './DonorLogin.css';
 
 const DonorLogin = () => {
-  const [phone, setPhone] = useState('');
   const navigate = useNavigate();
+  const [phone, setPhone] = useState('');
+  const [error, setError] = useState('');
 
   // Gestion de la connexion du donneur
-  // Simulation avec utilisateur de test pour la démo
-  const handleDonorLogin = async (e) => {
+  // Actuellement simulée pour la démo
+  const handleDonorLogin = (e) => {
     e.preventDefault();
-    if (!phone) return;
-
-    try {
-      // Simulation d'une connexion avec l'utilisateur de test
-      // En production, ceci serait un vrai appel API
-      const testUser = {
-        id: '69d8a1da379b426856e7f8ee', // ID du donneur de test créé
-        name: 'Donneur Test',
-        role: 'donor'
-      };
-
-      // Stocker l'ID utilisateur dans localStorage
-      localStorage.setItem('userId', testUser.id);
-      localStorage.setItem('userName', testUser.name);
-      localStorage.setItem('userRole', testUser.role);
-
-      navigate('/donor-space');
-    } catch (error) {
-      console.error('Erreur de connexion:', error);
-      alert('Erreur de connexion. Veuillez réessayer.');
-    }
+    if (phone) navigate('/donor-space');
   };
 
   return (
-    <div className="donor-login-container">
+    <div className="donor-container theme-donneur">
+
+      {/* Barre statut */}
+      <div className="donor-status-bar">
+        <span style={{ fontSize: '10px', fontWeight: '700', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '2px' }}>
+          Espace Donneur
+        </span>
+        <span style={{ fontSize: '12px', fontWeight: '700', color: '#d32f2f', display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <Heart size={12} /> Donneur
+        </span>
+      </div>
+
       <div className="donor-card">
-        <div className="donor-icon-header">
-          <Heart size={40} className="pulse-icon" fill="#ef4444" color="#ef4444" />
+
+        {/* En-tête */}
+        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <div className="donor-icon">
+            <Heart size={32} color="white" className="pulse-icon" fill="white" />
+          </div>
+          <h1>Rakitra Ra</h1>
+          <p style={{ color: '#64748b', fontSize: '14px' }}>Prêt à sauver une vie aujourd'hui ?</p>
         </div>
-        
-        <h1 className="donor-title">Rakitra Ra</h1>
-        <p className="donor-subtitle">Prêt à sauver une vie aujourd'hui ?</p>
 
         <form onSubmit={handleDonorLogin} className="donor-form">
-          <div className="input-box">
-            <Phone size={18} className="icon-fade" />
-            <input 
-              type="tel" 
-              placeholder="Votre numéro de téléphone" 
+
+          {/* Erreur */}
+          {error && (
+            <div className="donor-error">
+              {error}
+            </div>
+          )}
+
+          {/* Téléphone */}
+          <div>
+            <label>
+              <Phone size={14} /> Numéro de téléphone
+            </label>
+            <input
+              type="tel"
+              placeholder="034 00 000 00"
+              className="donor-input"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              required 
+              required
             />
           </div>
 
+          {/* Bouton connexion */}
           <button type="submit" className="donor-btn">
             Se connecter <ArrowRight size={18} />
           </button>
+
+          {/* Liens */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', marginTop: '8px' }}>
+            <a
+              href="#"
+              onClick={(e) => { e.preventDefault(); navigate('/register'); }}
+              className="donor-link"
+            >
+              Pas encore inscrit ? S'inscrire
+            </a>
+            <a
+              href="#"
+              onClick={(e) => { e.preventDefault(); navigate('/'); }}
+              className="donor-link"
+            >
+              <ArrowLeft size={14} /> Retour au portail public
+            </a>
+          </div>
+
         </form>
 
+        {/* Footer */}
         <div className="donor-footer">
           <Fingerprint size={14} /> Connexion sécurisée
         </div>
+
       </div>
     </div>
   );
