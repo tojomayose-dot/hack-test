@@ -114,7 +114,13 @@ const Register = () => {
               required
             />
           </div>
-          <div className="text-center mt-6">
+          <div className="text-center mt-6 space-y-2">
+            <button 
+              onClick={() => navigate('/login-donneur')} 
+              className="block w-full text-sm font-semibold text-white bg-red-500 hover:bg-red-600 py-2 rounded-lg transition"
+            >
+              Accès Espace Donneur
+            </button>
             <button 
               onClick={() => navigate('/admin')} 
               className="text-xs text-slate-400 hover:text-blue-500 underline transition"

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Heart, User, MapPin, Phone } from 'lucide-react';
+import { Heart, User, MapPin, Phone, LogOut } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import './DonorSpace.css';
 
 const DonorSpace = () => {
+  const navigate = useNavigate();
   const [donor, setDonor] = useState(null);
   const [donations, setDonations] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -35,8 +37,17 @@ const DonorSpace = () => {
   return (
     <div className="donor-space">
       <div className="header">
-        <Heart size={32} color="#ef4444" />
-        <h1>Espace Donneur</h1>
+        <div className="header-title">
+          <Heart size={32} color="#ef4444" />
+          <h1>Espace Donneur</h1>
+        </div>
+        <button 
+          onClick={() => navigate('/login-donneur')}
+          className="logout-btn"
+          title="Déconnexion"
+        >
+          <LogOut size={20} />
+        </button>
       </div>
 
       {donor && (

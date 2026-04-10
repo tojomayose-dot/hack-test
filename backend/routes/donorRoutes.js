@@ -15,7 +15,13 @@ router.get('/search', async (req, res) => {
 
         const compatibilityMap = {
             "O-": ["O-"],
-            // ... reste de ton map ...
+            "O+": ["O+", "O-"],
+            "A-": ["A-", "O-"],
+            "A+": ["A+", "A-", "O+", "O-"],
+            "B-": ["B-", "O-"],
+            "B+": ["B+", "B-", "O+", "O-"],
+            "AB-": ["AB-", "A-", "B-", "O-"],
+            "AB+": ["AB+", "AB-", "A+", "A-", "B+", "B-", "O+", "O-"]
         };
 
         const compatibleTypes = compatibilityMap[bloodGroup];
