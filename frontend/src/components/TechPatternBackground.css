@@ -1,0 +1,92 @@
+.tech-pattern-background-wrapper {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: -1;
+  background: var(--pattern-gradient, linear-gradient(180deg, #eef2ff 0%, #dbeafe 45%, #bfdbfe 100%));
+}
+
+.tech-pattern-background-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.72), transparent 24%),
+              radial-gradient(circle at 84% 12%, rgba(255, 255, 255, 0.35), transparent 20%),
+              radial-gradient(circle at 52% 78%, rgba(255, 255, 255, 0.18), transparent 24%);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.tech-pattern-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(90deg, transparent, transparent 110px, var(--pattern-line, rgba(255, 255, 255, 0.16)) 110px, var(--pattern-line, rgba(255, 255, 255, 0.16)) 111px),
+    repeating-linear-gradient(0deg, transparent, transparent 110px, var(--pattern-line, rgba(255, 255, 255, 0.16)) 110px, var(--pattern-line, rgba(255, 255, 255, 0.16)) 111px);
+  opacity: 0.16;
+  pointer-events: none;
+}
+
+.tech-pattern-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.tech-pattern-glow.glow-1 {
+  width: 360px;
+  height: 360px;
+  top: 8%;
+  left: -10%;
+  background: var(--pattern-glow-1, rgba(96, 165, 250, 0.22));
+  animation: float-vertical 28s ease-in-out infinite;
+}
+
+.tech-pattern-glow.glow-2 {
+  width: 280px;
+  height: 280px;
+  bottom: 10%;
+  right: -8%;
+  background: var(--pattern-glow-2, rgba(56, 189, 248, 0.14));
+  animation: float-vertical 32s ease-in-out infinite;
+}
+
+@keyframes float-vertical {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-24px);
+  }
+}
+
+@media (max-width: 768px) {
+  .tech-pattern-grid {
+    background-size: 90px 90px;
+  }
+
+  .tech-pattern-glow.glow-1 {
+    width: 260px;
+    height: 260px;
+  }
+
+  .tech-pattern-glow.glow-2 {
+    width: 200px;
+    height: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tech-pattern-grid {
+    background-size: 70px 70px;
+    opacity: 0.12;
+  }
+
+  .tech-pattern-glow.glow-1,
+  .tech-pattern-glow.glow-2 {
+    filter: blur(72px);
+    opacity: 0.34;
+  }
+}

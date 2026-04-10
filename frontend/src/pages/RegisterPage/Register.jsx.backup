@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart, User, Phone, MapPin, Lock, Droplets, UserCheck, Hospital } from 'lucide-react';
 import api from '../../services/api';
-import TechPatternBackground from '../../components/TechPatternBackground';
 import './Register.css';
 
 const Register = () => {
@@ -39,7 +38,6 @@ const Register = () => {
 
   return (
     <div className="auth-container theme-donneur">
-      <TechPatternBackground themeColor="blue" />
 
       {/* Barre statut */}
       <div className="auth-status-bar">

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Calendar, Activity, Droplet, CheckCircle, ArrowLeft } from 'lucide-react';
 import api from '../../services/api';
+import TechPatternBackground from '../../components/TechPatternBackground';
 import './DonationForm.css';
 
 const DonationForm = () => {
@@ -149,6 +150,7 @@ const DonationForm = () => {
   if (isSubmitted) {
     return (
       <div className="donation-form-container">
+        <TechPatternBackground themeColor="red" />
         <div className="success-message">
           <CheckCircle size={64} className="success-icon" />
           <h2>Don enregistré avec succès !</h2>
@@ -166,6 +168,7 @@ const DonationForm = () => {
 
   return (
     <div className="donation-form-container">
+      <TechPatternBackground themeColor="red" />
       {/* Header */}
       <div className="form-header">
         <button

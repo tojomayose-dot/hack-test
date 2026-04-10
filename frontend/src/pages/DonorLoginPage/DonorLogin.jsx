@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart, Phone, ArrowRight, Fingerprint, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import api from '../../services/api';
+import TechPatternBackground from '../../components/TechPatternBackground';
 import './DonorLogin.css';
 
 const DonorLogin = () => {
@@ -69,6 +70,7 @@ const DonorLogin = () => {
 
   return (
     <div className="donor-container theme-donneur">
+      <TechPatternBackground themeColor="blue" />
 
       {/* Barre statut */}
       <div className="donor-status-bar">
