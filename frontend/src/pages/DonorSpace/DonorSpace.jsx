@@ -14,6 +14,9 @@ const DonorSpace = () => {
   const [donations, setDonations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isUpdatingAvailability, setIsUpdatingAvailability] = useState(false);
+  const [availabilityMessage, setAvailabilityMessage] = useState(null);
+  const [availabilityMessageType, setAvailabilityMessageType] = useState('success');
 
   // Récupération des données du donneur connecté
   const storedUserJson = localStorage.getItem('user');
@@ -74,6 +77,44 @@ const DonorSpace = () => {
   }, [donorId]);
 
   const donorBloodGroup = donor?.bloodGroup || storedUser?.bloodGroup || 'O+';
+
+  const handleAvailabilityToggle = async () => {
+    if (!donorId || !donor) return;
+
+    const nextAvailability = !donor.isAvailable;
+    const currentUserJson = localStorage.getItem('user');
+    const currentUser = currentUserJson ? JSON.parse(currentUserJson) : storedUser;
+
+    setDonor(prev => prev ? { ...prev, isAvailable: nextAvailability } : prev);
+    setAvailabilityMessage('Mise à jour en cours...');
+    setAvailabilityMessageType('info');
+    setIsUpdatingAvailability(true);
+
+    try {
+      const response = await api.patch(`/donors/${donorId}/availability`, { isAvailable: nextAvailability });
+      const updatedDonor = response.data?.donor;
+      const newAvailability = updatedDonor?.isAvailable ?? nextAvailability;
+
+      setDonor(prev => prev ? { ...prev, isAvailable: newAvailability } : prev);
+
+      const mergedUser = currentUser ? { ...currentUser, isAvailable: newAvailability } : { isAvailable: newAvailability };
+      localStorage.setItem('user', JSON.stringify(mergedUser));
+
+      setAvailabilityMessage(
+        newAvailability
+          ? 'Vous êtes maintenant disponible. Les centres s’affichent normalement.'
+          : 'Vous êtes actuellement indisponible. Réactivez votre disponibilité pour voir les points de collecte.'
+      );
+      setAvailabilityMessageType('success');
+    } catch (err) {
+      console.error('Erreur lors de la mise à jour de la disponibilité :', err);
+      setDonor(prev => prev ? { ...prev, isAvailable: !nextAvailability } : prev);
+      setAvailabilityMessage('Impossible de mettre à jour votre disponibilité. Réessayez.');
+      setAvailabilityMessageType('error');
+    } finally {
+      setIsUpdatingAvailability(false);
+    }
+  };
 
   // Centres de collecte simulés (avec IDs d'hôpitaux réels)
   const centers = [
@@ -201,7 +242,7 @@ const DonorSpace = () => {
                 </div>
 
                 {/* Cartes Droite - Bas: Statut */}
-                <div className="status-card">
+                <div className={`status-card ${donor.isAvailable ? 'available' : 'unavailable'}`}>
                   <div className="card-header">
                     <Heart size={32} className="icon-heart" />
                   </div>
@@ -209,6 +250,25 @@ const DonorSpace = () => {
                   <h2 className="card-value">
                     {donor.isAvailable ? '✓ Disponible' : 'Indisponible'}
                   </h2>
+
+                  <label className="availability-switch">
+                    <input
+                      type="checkbox"
+                      checked={donor.isAvailable}
+                      onChange={handleAvailabilityToggle}
+                      disabled={isUpdatingAvailability}
+                    />
+                    <span className="switch-slider" />
+                    <span className="availability-label">
+                      {donor.isAvailable ? 'Actif' : 'Indisponible'}
+                    </span>
+                  </label>
+
+                  {availabilityMessage && (
+                    <p className={`availability-feedback ${availabilityMessageType}`}>
+                      {availabilityMessage}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -297,60 +357,75 @@ const DonorSpace = () => {
       {/* Contenu Points de Collecte */}
       {activeTab === 'centers' && (
         <div className="centers-view">
-          {/* Barre de Recherche */}
-          <div className="search-box">
-            <Search size={20} className="search-icon" />
-            <input
-              type="text"
-              className="search-input"
-              placeholder="Rechercher un centre..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-
-          {/* Grille des Centres */}
-          {filteredCenters.length === 0 ? (
-            <div className="no-results">
-              <MapPin size={48} />
-              <p>Aucun centre trouvé</p>
+          {!donor ? (
+            <div className="loading-state">
+              <Loader size={48} className="loading-spinner" />
+              <p>Chargement des centres...</p>
+            </div>
+          ) : donor.isAvailable === false ? (
+            <div className="unavailable-state">
+              <Heart size={48} className="unavailable-icon" />
+              <h3>Vous êtes actuellement indisponible.</h3>
+              <p>Réactivez votre disponibilité pour voir les points de collecte proches de vous.</p>
             </div>
           ) : (
-            <div className="centers-grid">
-              {filteredCenters.map(center => {
-                const offersBloodType = center.acceptedBloodTypes.includes(donorBloodGroup);
-                return (
-                  <div key={center.id} className="center-card">
-                    <div className="center-badge">
-                      {offersBloodType && <span className="match-badge">✓ Pour vous</span>}
-                    </div>
-                    <h3 className="center-name">{center.name}</h3>
+            <>
+              {/* Barre de Recherche */}
+              <div className="search-box">
+                <Search size={20} className="search-icon" />
+                <input
+                  type="text"
+                  className="search-input"
+                  placeholder="Rechercher un centre..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
 
-                    <div className="center-details">
-                      <div className="detail">
-                        <MapPin size={16} />
-                        <span>{center.address}</span>
-                      </div>
-                      <div className="detail">
-                        <Phone size={16} />
-                        <span>{center.phone}</span>
-                      </div>
-                      <div className="detail">
-                        <Clock size={16} />
-                        <span>{center.hours}</span>
-                      </div>
-                    </div>
+              {/* Grille des Centres */}
+              {filteredCenters.length === 0 ? (
+                <div className="no-results">
+                  <MapPin size={48} />
+                  <p>Aucun centre trouvé</p>
+                </div>
+              ) : (
+                <div className="centers-grid">
+                  {filteredCenters.map(center => {
+                    const offersBloodType = center.acceptedBloodTypes.includes(donorBloodGroup);
+                    return (
+                      <div key={center.id} className="center-card">
+                        <div className="center-badge">
+                          {offersBloodType && <span className="match-badge">✓ Pour vous</span>}
+                        </div>
+                        <h3 className="center-name">{center.name}</h3>
 
-                    <button 
-                      className="visit-button"
-                      onClick={() => navigate('/formulaire-don', { state: { hospitalId: center.id, centerName: center.name } })}
-                    >
-                      → S'y rendre
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
+                        <div className="center-details">
+                          <div className="detail">
+                            <MapPin size={16} />
+                            <span>{center.address}</span>
+                          </div>
+                          <div className="detail">
+                            <Phone size={16} />
+                            <span>{center.phone}</span>
+                          </div>
+                          <div className="detail">
+                            <Clock size={16} />
+                            <span>{center.hours}</span>
+                          </div>
+                        </div>
+
+                        <button 
+                          className="visit-button"
+                          onClick={() => navigate('/formulaire-don', { state: { hospitalId: center.id, centerName: center.name } })}
+                        >
+                          → S'y rendre
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </>
           )}
         </div>
       )}
