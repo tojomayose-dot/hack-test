@@ -28,9 +28,19 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await api.post('/auth/register', formData);
-      alert("Inscription réussie !");
-      navigate('/login');
+      const response = await api.post('/auth/register', formData);
+      const userData = response.data.user;
+      
+      // Stocker les données utilisateur dans localStorage
+      localStorage.setItem('user', JSON.stringify(userData));
+      localStorage.setItem('userId', userData._id);
+      localStorage.setItem('userName', userData.name);
+      localStorage.setItem('userPhone', userData.phone);
+      localStorage.setItem('bloodGroup', userData.bloodGroup);
+      
+      alert("Inscription réussie ! Bienvenue !");
+      // Rediriger directement vers l'espace donneur
+      navigate('/donor-space');
     } catch (err) {
       alert(err.response?.data?.error || "Erreur serveur");
     }
