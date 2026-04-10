@@ -11,16 +11,16 @@ const DonorSpace = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulation : récupérer le donneur connecté
-    // En réalité, utiliser le token JWT pour récupérer l'utilisateur
+    // Chargement des données du donneur et de son historique
+    // Pour le moment, cela reste une simulation de démonstration.
     const fetchDonorData = async () => {
       try {
-        // Supposons que l'ID du donneur est stocké localement
+        // Supposons que l'ID du donneur est stocké en localStorage après authentification
         const donorId = localStorage.getItem('donorId');
         if (donorId) {
           const res = await api.get(`/donations/${donorId}`);
           setDonations(res.data);
-          // Ici, récupérer aussi les infos du donneur
+          // Affichage temporaire des informations du donneur
           setDonor({ name: 'Donneur Exemple', bloodGroup: 'A+', location: 'Antananarivo' });
         }
       } catch (err) {

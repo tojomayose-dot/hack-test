@@ -36,13 +36,14 @@ const Dashboard = () => {
   const [alertGroupSelected, setAlertGroupSelected] = useState('O+');
   const [sendingAlert, setSendingAlert] = useState(false);
 
-  // Charger les stats et donneurs au montage
+  // Charger les statistiques et la liste des donneurs au premier rendu
   useEffect(() => {
     fetchStats();
     fetchDonors();
     loadSampleAlerts();
   }, []);
 
+  // Récupérer les statistiques globales du tableau de bord
   const fetchStats = async () => {
     try {
       const response = await api.get('/stats');
@@ -52,6 +53,7 @@ const Dashboard = () => {
     }
   };
 
+  // Récupérer les donneurs depuis le backend, filtrés par groupe sanguin si nécessaire
   const fetchDonors = async (group = '') => {
     setLoading(true);
     setError(null);
@@ -68,6 +70,7 @@ const Dashboard = () => {
     }
   };
 
+  // Charger des alertes de démonstration pour l'historique
   const loadSampleAlerts = () => {
     setAlerts([
       { id: 1, group: 'O+', count: 5, timestamp: 'Il y a 30 min', status: 'sent' },
@@ -76,6 +79,7 @@ const Dashboard = () => {
     ]);
   };
 
+  // Envoyer une alerte d'urgence aux donneurs compatibles
   const handleSendAlert = async () => {
     if (!alertMessage.trim()) {
       alert('Veuillez entrer un message');
@@ -110,6 +114,7 @@ const Dashboard = () => {
     }
   };
 
+  // Sélectionner ou désélectionner un groupe sanguin pour la recherche
   const toggleGroup = (group) => {
     const newGroup = selectedGroup === group ? '' : group;
     setSelectedGroup(newGroup);

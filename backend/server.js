@@ -1,9 +1,10 @@
+// Charger les variables d'environnement depuis le fichier .env si présent
 require('dotenv').config();
 const express = require('express');
 const connectDB = require('./config/db');
 const cors = require('cors');
 
-// Importation des routes
+// Importation des routeurs dédiés à chaque fonctionnalité
 const authRoutes = require('./routes/authRoutes');
 const donationRoutes = require('./routes/donationRoutes');
 const donorRoutes = require('./routes/donorRoutes');
@@ -12,21 +13,21 @@ const statsRoutes = require('./routes/statsRoutes');
 
 const app = express();
 
-// Middlewares
+// Middlewares globaux appliqués à toutes les routes
 app.use(cors());
 app.use(express.json());
 
-// Connexion DB
+// Établir la connexion à MongoDB avant de traiter les requêtes
 connectDB();
 
-// Routes API
+// Montage des routes API par domaine
 app.use('/api/auth', authRoutes);
 app.use('/api/donations', donationRoutes);
 app.use('/api/donors', donorRoutes);
 app.use('/api/alerts', alertRoutes);
 app.use('/api/stats', statsRoutes);
 
-// Démarrage serveur
+// Démarrage du serveur HTTP
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Serveur démarré sur le port ${PORT}`);

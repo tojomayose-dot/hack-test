@@ -4,7 +4,8 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-// Register
+// Route POST /api/auth/register
+// Crée un nouvel utilisateur (donneur ou autre rôle) avec mot de passe chiffré.
 router.post('/register', async (req, res) => {
     try {
         const { phone, password } = req.body;
@@ -33,7 +34,8 @@ router.post('/register', async (req, res) => {
     }
 });
 
-// Login
+// Route POST /api/auth/login
+// Authentifie l'utilisateur et retourne un token JWT.
 router.post('/login', async (req, res) => {
     try {
         const { phone, password } = req.body;

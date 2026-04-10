@@ -3,7 +3,8 @@ const router = express.Router();
 const Donation = require('../models/Donation');
 const User = require('../models/User');
 
-// Nouveau don
+// Route POST /api/donations
+// Crée un nouvel enregistrement de don en vérifiant les IDs fournis
 router.post('/', async (req, res) => {
     try {
         const { donorId, hospitalId } = req.body;
@@ -29,7 +30,8 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Historique
+// Route GET /api/donations/:donorId
+// Retourne l'historique des dons pour un donneur donné
 router.get('/:donorId', async (req, res) => {
     try {
         const history = await Donation.find({ donorId: req.params.donorId })

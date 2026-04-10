@@ -16,6 +16,7 @@ const Register = () => {
     isAvailable: true
   });
 
+  // Vérifier si le backend est disponible pour éviter les inscriptions sans serveur
   useEffect(() => {
     api.get('/stats')
       .then(() => setBackendStatus("Connecté ✅"))
@@ -24,6 +25,7 @@ const Register = () => {
 
   const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
+  // Envoi du formulaire d'inscription vers le backend
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -37,6 +39,7 @@ const Register = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 p-4 flex flex-col items-center justify-center">
+      {/* Indicateur de connexion au backend */}
       <div className="max-w-md w-full mb-4 flex justify-between items-center bg-white px-4 py-2 rounded-full shadow-sm border border-slate-100">
         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Serveur</span>
         <span className={`text-xs font-bold ${backendStatus.includes('✅') ? 'text-green-500' : 'text-red-500'}`}>

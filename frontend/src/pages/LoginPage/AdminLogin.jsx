@@ -13,13 +13,13 @@ const AdminLogin = () => {
   setError("");
 
   try {
-    // On essaie de se connecter avec le rôle 'hospital' qui est dans ta base
+    // Appel du backend pour authentifier l'utilisateur
     const response = await api.post('/auth/login', { 
         phone: credentials.phone, // Assure-toi de taper le numéro exact (ex: +261340000001)
         password: credentials.password 
     });
 
-    // Si le backend renvoie l'utilisateur et qu'il est de type hospital ou admin
+    // Vérifier que l'utilisateur connecté est un personnel hospitalier
     if (response.data && (response.data.user.role === 'hospital' || response.data.user.role === 'admin')) {
       console.log("Accès autorisé pour :", response.data.user.hospitalName);
       navigate('/dashboard');
@@ -30,7 +30,7 @@ const AdminLogin = () => {
     console.error("Erreur de connexion:", err);
     
     // --- BACKUP SPÉCIAL POUR TA DONNÉE HJRA ---
-    // Si le serveur a un souci, on simule avec TES vraies données de la base
+    // Si le serveur a un souci, on utilise une simulation locale pour le compte HJRA
     if (credentials.phone === "+261340000001" && credentials.password === "123") {
         console.log("Simulation réussie avec le compte HJRA");
         navigate('/Dashboard');

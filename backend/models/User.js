@@ -53,11 +53,6 @@ const userSchema = new mongoose.Schema(
         default: true,
     },
 
-    isAvailable: {
-        type: Boolean,
-        default: true,
-    },
-
     // Spécifique HÔPITAL
     hospitalName: {
         type: String,

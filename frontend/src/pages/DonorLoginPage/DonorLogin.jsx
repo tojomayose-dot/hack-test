@@ -8,10 +8,11 @@ const DonorLogin = () => {
   const [phone, setPhone] = useState('');
   const navigate = useNavigate();
 
+  // Gestion de la connexion du donneur
+  // Actuellement simulée pour la démo
   const handleDonorLogin = (e) => {
     e.preventDefault();
-    // Simulation pour la démo
-    if(phone) navigate('/donor-space'); 
+    if (phone) navigate('/donor-space');
   };
 
   return (
