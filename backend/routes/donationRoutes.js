@@ -30,6 +30,20 @@ router.post('/', async (req, res) => {
     }
 });
 
+// Route GET /api/donations
+// Retourne tous les dons avec informations détaillées
+router.get('/', async (req, res) => {
+    try {
+        const donations = await Donation.find()
+            .populate('donorId', 'name phone bloodGroup')
+            .populate('hospitalId', 'hospitalName location');
+
+        res.json(donations);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // Route GET /api/donations/:donorId
 // Retourne l'historique des dons pour un donneur donné
 router.get('/:donorId', async (req, res) => {

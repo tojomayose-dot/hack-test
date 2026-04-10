@@ -127,8 +127,7 @@ const Register = () => {
               type="password"
               placeholder="••••••••"
               className="auth-form-input"
-            > 
-            </input>
+            />
             <button
               onClick={() => navigate('/login-donneur')}
               className="block w-full text-sm font-semibold text-white bg-red-500 hover:bg-red-600 py-2 rounded-lg transition"

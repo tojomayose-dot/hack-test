@@ -1,0 +1,194 @@
+{
+  "info": {
+    "_postman_id": "donation-api-collection",
+    "name": "API Donations de Sang",
+    "description": "Collection de tests pour l'API POST /api/donations",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Donation - Valide (450ml)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"donorId\": \"{{donor_id}}\",\n  \"hospitalId\": \"{{hospital_id}}\",\n  \"volume\": 450,\n  \"healthNote\": \"Normal\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/donations",
+          "host": ["{{base_url}}"],
+          "path": ["api", "donations"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Donation - Volume minimum (100ml)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"donorId\": \"{{donor_id}}\",\n  \"hospitalId\": \"{{hospital_id}}\",\n  \"volume\": 100,\n  \"healthNote\": \"Fatigue\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/donations",
+          "host": ["{{base_url}}"],
+          "path": ["api", "donations"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Donation - Volume maximum (1000ml)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"donorId\": \"{{donor_id}}\",\n  \"hospitalId\": \"{{hospital_id}}\",\n  \"volume\": 1000,\n  \"healthNote\": \"Normal\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/donations",
+          "host": ["{{base_url}}"],
+          "path": ["api", "donations"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Donation - Tension Basse",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"donorId\": \"{{donor_id}}\",\n  \"hospitalId\": \"{{hospital_id}}\",\n  \"volume\": 450,\n  \"healthNote\": \"Tension Basse\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/donations",
+          "host": ["{{base_url}}"],
+          "path": ["api", "donations"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Donation - Erreur: Donneur invalide",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"donorId\": \"000000000000000000000000\",\n  \"hospitalId\": \"{{hospital_id}}\",\n  \"volume\": 450,\n  \"healthNote\": \"Normal\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/donations",
+          "host": ["{{base_url}}"],
+          "path": ["api", "donations"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Donation - Erreur: Hôpital invalide",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"donorId\": \"{{donor_id}}\",\n  \"hospitalId\": \"000000000000000000000000\",\n  \"volume\": 450,\n  \"healthNote\": \"Normal\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/donations",
+          "host": ["{{base_url}}"],
+          "path": ["api", "donations"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Donation - Erreur: Champs manquants",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"donorId\": \"{{donor_id}}\",\n  \"volume\": 450\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/donations",
+          "host": ["{{base_url}}"],
+          "path": ["api", "donations"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Historique - Récupérer tous les dons d'un donneur",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/donations/{{donor_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["api", "donations", "{{donor_id}}"]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "donor_id",
+      "value": "507f1f77bcf86cd799439011",
+      "type": "string"
+    },
+    {
+      "key": "hospital_id",
+      "value": "507f1f77bcf86cd799439012",
+      "type": "string"
+    }
+  ]
+}

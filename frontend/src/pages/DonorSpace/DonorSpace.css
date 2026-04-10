@@ -27,9 +27,7 @@
   overflow-x: hidden;
 }
 
-/* ================================================================
    TABS NAVIGATION
-   ================================================================ */
 
 .tabs-container {
   display: flex;
@@ -71,9 +69,7 @@
   height: 20px;
 }
 
-/* ================================================================
    BENTO GRID LAYOUT
-   ================================================================ */
 
 .bento-grid {
   display: grid;
@@ -157,9 +153,7 @@
   font-size: 14px;
 }
 
-/* ================================================================
-   CARTES SANG ET STATUT (Droite)
-   ================================================================ */
+/* CARTES SANG ET STATUT (Droite) */
 
 .blood-card,
 .status-card {
@@ -225,9 +219,7 @@
   letter-spacing: -0.5px;
 }
 
-/* ================================================================
-   SECTION INFOS (Dernier Don, Total Dons)
-   ================================================================ */
+/* SECTION INFOS (Dernier Don, Total Dons) */
 
 .info-section {
   display: grid;
@@ -275,9 +267,7 @@
   color: var(--text-primary);
 }
 
-/* ================================================================
    HISTORIQUE DES DONS
-   ================================================================ */
 
 .history-section {
   max-width: 1000px;
@@ -343,9 +333,7 @@
   flex-shrink: 0;
 }
 
-/* ================================================================
    CENTRES VIEW
-   ================================================================ */
 
 .search-box {
   position: relative;
@@ -384,9 +372,7 @@
   border-color: rgba(230, 57, 70, 0.3);
 }
 
-/* ================================================================
    GRILLE DES CENTRES
-   ================================================================ */
 
 .centers-grid {
   display: grid;
@@ -498,9 +484,7 @@
   margin: 0;
 }
 
-/* ================================================================
-   RESPONSIVE
-   ================================================================ */
+/* RESPONSIVE */
 
 @media (max-width: 768px) {
   .bento-grid {
@@ -582,4 +566,139 @@
     align-items: flex-start;
     gap: 12px;
   }
+}
+
+/* Bouton pour accéder au formulaire de donation */
+.donation-action {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.donate-btn {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 50px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+.donate-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+}
+
+.donate-btn:active {
+  transform: translateY(0);
+}
+
+   ÉTATS DE CHARGEMENT ET ERREURS
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.loading-spinner {
+  color: var(--accent-red);
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  color: #ef4444;
+  background-color: rgba(239, 68, 68, 0.1);
+  border-radius: 16px;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.retry-btn {
+  margin-top: 20px;
+  padding: 12px 24px;
+  background: var(--accent-red);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.retry-btn:hover {
+  background: var(--accent-red-hover);
+}
+
+   ÉTAT VIDE - AUCUN DON
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  background-color: var(--bg-card);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.empty-icon {
+  color: var(--accent-red);
+  margin-bottom: 24px;
+  opacity: 0.7;
+}
+
+.empty-state h3 {
+  color: var(--text-primary);
+  margin: 0 0 12px 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.empty-state p {
+  color: var(--text-secondary);
+  margin: 0 0 32px 0;
+  max-width: 400px;
+  line-height: 1.5;
+}
+
+.donate-now-btn {
+  padding: 16px 32px;
+  background: linear-gradient(135deg, var(--accent-red), var(--accent-red-hover));
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(230, 57, 70, 0.3);
+}
+
+.donate-now-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(230, 57, 70, 0.4);
 }
