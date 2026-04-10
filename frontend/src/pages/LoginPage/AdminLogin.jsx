@@ -54,7 +54,7 @@ const AdminLogin = () => {
             <Lock size={32} color="white" />
           </div>
           <h1>Rakitra Ra</h1>
-          <p style={{ color: '#64748b', fontSize: '14px' }}>Espace Administration Hôpital</p>
+          <p style={{ color: '#ffffff', fontSize: '14px' }}>Espace Administration Hôpital</p>
         </div>
 
         <form onSubmit={handleLogin} className="admin-form">
