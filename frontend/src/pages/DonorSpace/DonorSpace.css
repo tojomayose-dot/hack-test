@@ -28,7 +28,7 @@
   font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
   overflow-x: hidden;
   position: relative;
-  padding: 30px;
+  padding: 0px 7% 7% 7%;
 }
 
 .donor-space::before {
@@ -261,8 +261,8 @@
 }
 
 .avatar {
-  width: 90px;
-  height: 90px;
+  width: 120px;
+  height: 120px;
   background: rgba(99, 13, 19, 0.1);
   border: 2px solid rgba(99, 13, 19, 0.2);
   border-radius: 50%;

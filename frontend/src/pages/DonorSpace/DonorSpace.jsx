@@ -240,7 +240,7 @@ const DonorSpace = () => {
                   </div>
 
                   <div className="avatar">
-                    <User size={56} />
+                    <User size={70} />
                   </div>
 
                   <div className="header-info">
