@@ -17,6 +17,7 @@ const DonorSpace = () => {
   const [isUpdatingAvailability, setIsUpdatingAvailability] = useState(false);
   const [availabilityMessage, setAvailabilityMessage] = useState(null);
   const [availabilityMessageType, setAvailabilityMessageType] = useState('success');
+  const [showAllDonations, setShowAllDonations] = useState(false);
 
   // Récupération des données du donneur connecté
   const storedUserJson = localStorage.getItem('user');
@@ -317,7 +318,7 @@ const DonorSpace = () => {
                   </div>
                 ) : (
                   <div className="donations-list">
-                    {donations.map(donation => (
+                    {(showAllDonations ? donations : donations.slice(0, 3)).map(donation => (
                       <div key={donation._id} className="donation-card">
                         <div className="donation-left">
                           <h3 className="donation-hospital">
@@ -334,7 +335,7 @@ const DonorSpace = () => {
                             </span>
                           </div>
                         </div>
-                        <div className="donation-status">
+                        <div className={`donation-status ${donation.status === 'completed' ? 'status-completed' : donation.status === 'pending' ? 'status-pending' : ''}`}>
                           {donation.status === 'completed' || donation.status === 'pending'
                             ? (donation.status === 'completed' ? 'Complété' : 'En attente')
                             : donation.status
@@ -342,6 +343,22 @@ const DonorSpace = () => {
                         </div>
                       </div>
                     ))}
+                    {donations.length > 3 && !showAllDonations && (
+                      <button
+                        onClick={() => setShowAllDonations(true)}
+                        className="see-more-btn"
+                      >
+                        Voir plus ({donations.length - 3} autres)
+                      </button>
+                    )}
+                    {showAllDonations && donations.length > 3 && (
+                      <button
+                        onClick={() => setShowAllDonations(false)}
+                        className="see-less-btn"
+                      >
+                        Voir moins
+                      </button>
+                    )}
                   </div>
                 )}
               </div>
