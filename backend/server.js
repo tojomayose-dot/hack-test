@@ -1,5 +1,6 @@
 // Charger les variables d'environnement depuis le fichier .env si présent
-require('dotenv').config();
+require('dotenv').config({ path: '/home/tojo/hackathon_test/backend/.env' });
+console.log("MONGO_URI après dotenv:", process.env.MONGO_URI);
 const express = require('express');
 const connectDB = require('./config/db');
 const cors = require('cors');

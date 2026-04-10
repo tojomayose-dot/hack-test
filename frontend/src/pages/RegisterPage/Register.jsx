@@ -38,7 +38,7 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 p-4 flex flex-col items-center justify-center">
+    <div className="auth-container theme-donneur">
       {/* Indicateur de connexion au backend */}
       <div className="max-w-md w-full mb-4 flex justify-between items-center bg-white px-4 py-2 rounded-full shadow-sm border border-slate-100">
         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Serveur</span>
@@ -47,19 +47,19 @@ const Register = () => {
         </span>
       </div>
 
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 border border-slate-100">
+      <div className="auth-card">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-blue-900 italic">Rakitra Ra</h1>
+          <h1>Rakitra Ra</h1>
           <p className="text-slate-500 text-sm">Sauvez des vies en un clic</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="auth-form">
           <div>
             <label className="block text-sm font-semibold text-slate-700 mb-1">Nom complet</label>
             <input
               type="text"
               placeholder="Ex: Jean Rakoto"
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none"
+              className="auth-form-input"
               onChange={(e) => setFormData({...formData, name: e.target.value})}
               required
             />
@@ -70,7 +70,7 @@ const Register = () => {
             <input
               type="text"
               placeholder="034 00 000 00"
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none"
+              className="auth-form-input"
               onChange={(e) => setFormData({...formData, phone: e.target.value})}
               required
             />
@@ -81,7 +81,7 @@ const Register = () => {
             <input
               type="text"
               placeholder="Ex: Ankatso"
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none"
+              className="auth-form-input"
               onChange={(e) => setFormData({...formData, location: e.target.value})}
               required
             />
@@ -96,8 +96,8 @@ const Register = () => {
                   type="button"
                   onClick={() => setFormData({...formData, bloodGroup: group})}
                   className={`py-2 rounded-lg border-2 font-bold transition ${
-                    formData.bloodGroup === group 
-                    ? 'border-blue-600 bg-blue-50 text-blue-600' 
+                    formData.bloodGroup === group
+                    ? 'border-blue-600 bg-blue-50 text-blue-600'
                     : 'border-slate-100 text-slate-400 hover:border-slate-200'
                   }`}
                 >
@@ -112,20 +112,15 @@ const Register = () => {
             <input
               type="password"
               placeholder="••••••••"
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none"
-              onChange={(e) => setFormData({...formData, password: e.target.value})}
-              required
-            />
-          </div>
-          <div className="text-center mt-6 space-y-2">
-            <button 
-              onClick={() => navigate('/login-donneur')} 
+              className="auth-form-input"
+            <button
+              onClick={() => navigate('/login-donneur')}
               className="block w-full text-sm font-semibold text-white bg-red-500 hover:bg-red-600 py-2 rounded-lg transition"
             >
               Accès Espace Donneur
             </button>
-            <button 
-              onClick={() => navigate('/admin')} 
+            <button
+              onClick={() => navigate('/admin')}
               className="text-xs text-slate-400 hover:text-blue-500 underline transition"
             >
               Accès Administration Hôpital
@@ -135,11 +130,11 @@ const Register = () => {
           <button
             type="submit"
             disabled={backendStatus.includes('❌')}
-            className={`w-full font-bold py-4 rounded-xl shadow-lg transition-all mt-4 ${
-                backendStatus.includes('❌') 
-                ? 'bg-slate-300 cursor-not-allowed' 
-                : 'bg-blue-600 hover:bg-blue-700 text-white'
-            }`}
+            className="submit-btn"
+            style={{
+              background: backendStatus.includes('❌') ? '#cbd5e1' : 'var(--primary-color)',
+              cursor: backendStatus.includes('❌') ? 'not-allowed' : 'pointer'
+            }}
           >
             S'inscrire comme donneur
           </button>

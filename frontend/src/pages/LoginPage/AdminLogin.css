@@ -1,45 +1,84 @@
-/* Animation de fond pour un effet dynamique */
-@keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+/* --- CONFIGURATION DES THÈMES (VARIABLES) --- */
+
+/* Thème Hôpital : Bleu médical moderne pour AdminLogin */
+.theme-hopital {
+  --primary-color: #1976d2;      /* Bleu médical */
+  --secondary-color: #0d47a1;    /* Bleu plus sombre */
+  --bg-gradient: linear-gradient(135deg, #1e3c72, #2a5298); /* Dégradé raffiné */
+  --btn-text: #ffffff;
 }
+
+/* --- STRUCTURE PRINCIPALE --- */
 
 .admin-container {
-    background: linear-gradient(-45deg, #0f172a, #1e293b, #1e3a8a, #0f172a);
-    background-size: 400% 400%;
-    animation: gradientBG 15s ease infinite;
-    min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100vw;
+  /* Utilise le dégradé dynamique */
+  background: var(--bg-gradient);
+  transition: all 0.8s ease; /* Transition très fluide */
+  font-family: 'Poppins', sans-serif;
 }
 
-/* Effet de brillance sur la carte Admin */
+/* --- LA CARTE (FORMULAIRE) --- */
+
 .admin-card {
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: rgba(255, 255, 255, 0.95); /* Blanc quasi-opaque pour la clarté */
+  border-radius: 25px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 500px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  overflow: hidden; /* Pour le border-radius */
 }
 
-.admin-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+/* --- FORMULAIRE ET ENTRÉES --- */
+
+.admin-input {
+  padding: 15px 20px;
+  border: 2px solid #eef2f7;
+  border-radius: 12px;
+  background: #f8fafc;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+  color: #334155; /* text-slate-700 */
 }
 
-/* Style des inputs focus */
+/* Effet au focus sur l'input */
 .admin-input:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
-    background-color: #f8fafc;
+  border-color: var(--primary-color);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(25, 118, 210, 0.1); /* Bleu médical avec transparence */
 }
 
-/* Bouton Admin Premium */
+/* --- BOUTON VALIDER --- */
+
 .admin-btn {
-    background: linear-gradient(90deg, #1e3a8a 0%, #3b82f6 100%);
-    border: none;
-    letter-spacing: 1px;
-    text-transform: uppercase;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: var(--btn-text);
+  padding: 18px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  text-transform: uppercase;
+  width: 100%;
 }
 
 .admin-btn:hover {
-    filter: brightness(1.1);
-    letter-spacing: 2px;
+  background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+  transform: translateY(-3px);
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+}
+
+.admin-btn:active {
+  transform: translateY(0);
 }
