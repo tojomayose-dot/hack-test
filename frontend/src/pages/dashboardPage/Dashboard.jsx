@@ -40,7 +40,7 @@ const Dashboard = () => {
   useEffect(() => {
     fetchStats();
     fetchDonors();
-    loadSampleAlerts();
+    fetchAlerts();
   }, []);
 
   // Récupérer les statistiques globales du tableau de bord
@@ -54,29 +54,35 @@ const Dashboard = () => {
   };
 
   // Récupérer les donneurs depuis le backend, filtrés par groupe sanguin si nécessaire
-  const fetchDonors = async (group = '') => {
+  const fetchDonors = async (group = '', location = '') => {
     setLoading(true);
     setError(null);
+
     try {
-      const url = group ? `/donors/search?bloodGroup=${encodeURIComponent(group)}` : '/donors/search';
-      const response = await api.get(url);
+      const response = await api.get('/donors/search', {
+        params: {
+          bloodGroup: group,
+          location: location
+        }
+      });
+
       setDonors(response.data || []);
     } catch (err) {
-      console.error("Erreur recherche:", err);
-      setError('❌ Le serveur n\'est pas disponible. Vérifiez que le backend est lancé.');
-      setDonors([]);
+      console.error(err);
+      setError("Serveur indisponible");
     } finally {
       setLoading(false);
     }
   };
 
   // Charger des alertes de démonstration pour l'historique
-  const loadSampleAlerts = () => {
-    setAlerts([
-      { id: 1, group: 'O+', count: 5, timestamp: 'Il y a 30 min', status: 'sent' },
-      { id: 2, group: 'AB-', count: 2, timestamp: 'Il y a 2 heures', status: 'failed' },
-      { id: 3, group: 'B+', count: 8, timestamp: 'Hier à 14h', status: 'sent' },
-    ]);
+  const fetchAlerts = async () => {
+    try {
+      const res = await api.get('/alerts');
+      setAlerts(res.data);
+    } catch (err) {
+      console.error("Erreur alerts:", err);
+    }
   };
 
   // Envoyer une alerte d'urgence aux donneurs compatibles
@@ -89,10 +95,11 @@ const Dashboard = () => {
     setSendingAlert(true);
     try {
       const compatibleDonors = donors.filter(d => d.bloodGroup === alertGroupSelected);
+      const hospitalId = localStorage.getItem('hospitalId');
       await api.post('/alerts/send', {
         bloodGroupNeeded: alertGroupSelected,
         message: alertMessage,
-        hospitalId: 'hospital123' // À remplacer par l'ID réel de l'hôpital
+        hospitalId: hospitalId
       });
       
       setAlerts([{
@@ -120,6 +127,14 @@ const Dashboard = () => {
     setSelectedGroup(newGroup);
     fetchDonors(newGroup);
   };
+
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      fetchDonors(selectedGroup, searchQuartier);
+    }, 500);
+
+    return () => clearTimeout(delay);
+  }, [searchQuartier]);
 
   return (
     <div className="rakitra-dashboard">
@@ -227,7 +242,7 @@ const Dashboard = () => {
         {/* SECTION DROITE : RÉSULTATS (LISTE MODERNE) */}
         <main className="results-panel">
           <div className="panel-header">
-            <h1 className="main-title">Base de Donneurs</h1>
+            <h1 className="main-title">Donneurs disponibles</h1>
             <span className="results-count">{donors.length} profils trouvés</span>
           </div>
 
