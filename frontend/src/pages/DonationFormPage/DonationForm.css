@@ -4,15 +4,17 @@
    ================================================================ */
 
 :root {
-  --bg-dark: #111827;
-  --bg-card: #1f2937;
+  --bg-dark: #6e0808;
   --bg-hover: #374151;
-  --text-primary: #ffffff;
-  --text-secondary: #9ca3af;
-  --accent-red: #e63946;
   --accent-red-hover: #d62828;
   --success: #06b6d4;
   --border-color: rgba(255, 255, 255, 0.1);
+  --bg-card: #ffffff; /* Fond blanc comme l'image */
+  --text-primary: #1e293b; /* Bleu très foncé pour les labels */
+  --text-secondary: #94a3b8; /* Gris pour les icônes et placeholders */
+  --accent-red: #c92424; /* Rouge du bouton */
+  --input-bg: #f8fafc; /* Gris très clair pour l'intérieur des inputs */
+  --input-border: #e2e8f0; /* Bordure légère */
 }
 
 .donation-form-container {
@@ -25,6 +27,7 @@
   flex-direction: column;
   align-items: center;
 }
+
 
 /* ================================================================
    HEADER
@@ -43,8 +46,8 @@
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   color: var(--text-primary);
-  width: 44px;
-  height: 44px;
+  width: 95px;
+  height: 33px;
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -52,6 +55,9 @@
   cursor: pointer;
   transition: all 0.3s ease;
   flex-shrink: 0;
+  /* ... tes autres styles ... */
+  font-size: 15px; /* Augmenté (était à 14px ou 15px) */
+  font-weight: 100; /* Garde le gras pour la visibilité */
 }
 
 .back-btn:hover {
@@ -324,86 +330,85 @@
 
 .donation-form {
   background-color: var(--bg-card);
-  border-radius: 24px;
+  border-radius: 16px; /* Arrondi légèrement plus doux */
   padding: 32px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  max-width: 600px;
-  margin-bottom: 24px;
+  max-width: 500px;
+  margin: 0 auto;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); /* Ombre légère pour le relief */
 }
 
 .form-group {
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
 
-.form-group:last-of-type {
-  margin-bottom: 32px;
-}
-
-/* Labels */
+/* Labels avec icônes grises */
 .form-label {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 15px;
-  font-weight: 600;
-  margin-bottom: 10px;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: 700; /* Texte en gras comme l'image */
+  margin-bottom: 12px;
   color: var(--text-primary);
+  text-transform: none;
 }
 
+/* Icônes dans les labels (en gris sur l'image) */
 .form-label svg {
-  color: var(--accent-red);
+  color: #64748b; /* Gris bleuté des icônes de l'image */
 }
 
-/* Inputs texte et date */
+/* Style des Inputs */
 .form-input {
   width: 100%;
-  background-color: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
   color: var(--text-primary);
-  padding: 14px 16px;
+  padding: 16px 20px;
   border-radius: 12px;
   font-size: 15px;
-  font-family: inherit;
-  transition: all 0.3s ease;
-  margin-bottom: 8px;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
 }
 
 .form-input::placeholder {
-  color: var(--text-secondary);
+  color: #cbd5e1; /* Gris clair pour le texte d'exemple */
 }
 
 .form-input:focus {
   outline: none;
-  background-color: rgba(255, 255, 255, 0.08);
-  border-color: rgba(230, 57, 70, 0.4);
-  box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.1);
+  border-color: #3b82f6; /* Bordure bleue au focus (standard UI) */
+  background-color: #ffffff;
 }
 
-/* Date/Time input styling */
-.form-input[type="date"],
-.form-input[type="time"] {
-  color-scheme: dark;
-}
-
-.form-input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(1) brightness(1.2);
+/* Style spécifique pour le Select (Groupe Sanguin) */
+select.form-input {
+  appearance: none;
   cursor: pointer;
 }
 
-.form-input[type="time"]::-webkit-calendar-picker-indicator {
-  filter: invert(1) brightness(1.2);
+/* Bouton S'inscrire (Rouge avec icône coeur) */
+.btn-submit {
+  width: 100%;
+  background-color: var(--accent-red);
+  color: white;
+  border: none;
+  padding: 18px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   cursor: pointer;
+  text-transform: uppercase;
+  transition: background 0.3s;
 }
 
-/* Form hints */
-.form-hint {
-  display: block;
-  font-size: 12px;
-  color: var(--text-secondary);
-  margin: 0;
-  line-height: 1.4;
+.btn-submit:hover {
+  background-color: #a81d1d;
 }
-
 /* ================================================================
    CHECKBOX GROUP
    ================================================================ */

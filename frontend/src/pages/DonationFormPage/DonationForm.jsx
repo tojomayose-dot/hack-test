@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Calendar, Activity, Droplet, CheckCircle, ArrowLeft } from 'lucide-react';
 import api from '../../services/api';
@@ -21,15 +21,48 @@ const DonationForm = () => {
   // Récupération de l'ID du donneur connecté (via localStorage)
   const storedUser = JSON.parse(localStorage.getItem('user') || 'null');
   const donorId = localStorage.getItem('userId') || storedUser?._id || '';
+  const [lastDonationDate, setLastDonationDate] = useState(undefined);
+  const [lastDonationLoading, setLastDonationLoading] = useState(true);
 
   // Vérification d'authentification : rediriger si non connecté
-  React.useEffect(() => {
+  useEffect(() => {
     if (!donorId) {
       alert('Veuillez vous connecter pour enregistrer un don.');
       navigate('/login-donneur');
       return;
     }
   }, [donorId, navigate]);
+
+  useEffect(() => {
+    const fetchLastDonation = async () => {
+      if (!donorId) {
+        setLastDonationDate(null);
+        setLastDonationLoading(false);
+        return;
+      }
+
+      setLastDonationLoading(true);
+      try {
+        const response = await api.get(`/donations/${donorId}`);
+        const donations = response.data || [];
+        if (donations.length > 0) {
+          const sorted = donations.sort(
+            (a, b) => new Date(b.donationDate) - new Date(a.donationDate)
+          );
+          setLastDonationDate(sorted[0].donationDate);
+        } else {
+          setLastDonationDate(null);
+        }
+      } catch (err) {
+        console.error('Erreur lors de la récupération du dernier don :', err);
+        setLastDonationDate(null);
+      } finally {
+        setLastDonationLoading(false);
+      }
+    };
+
+    fetchLastDonation();
+  }, [donorId]);
 
   const [formData, setFormData] = useState({
     donationDate: new Date().toISOString().split('T')[0], // Date d'aujourd'hui par défaut
@@ -56,10 +89,31 @@ const DonationForm = () => {
     e.preventDefault();
     setError('');
 
-    // Validation
+    // Validation de base
     if (!formData.donationDate || !formData.healthNote.trim() || formData.amount <= 0) {
       setError('Veuillez remplir tous les champs correctement.');
       return;
+    }
+
+    if (lastDonationLoading) {
+      setError('Vérification de votre dernier don en cours. Veuillez patienter quelques instants.');
+      return;
+    }
+
+    if (lastDonationDate) {
+      const dateActuelle = new Date();
+      const derniereDateDon = new Date(lastDonationDate);
+      const daysSinceLastDonation = Math.floor(
+        (dateActuelle - derniereDateDon) / (1000 * 60 * 60 * 24)
+      );
+
+      if (daysSinceLastDonation < 56) {
+        const joursRestants = 56 - daysSinceLastDonation;
+        setError(
+          `Désolé, vous ne pouvez pas encore participer. Votre dernier don est trop récent. Prenez un repos en attendant que vos réserves se régénèrent (Minimum 56 jours). Il reste ${joursRestants} jour${joursRestants > 1 ? 's' : ''} avant votre prochaine éligibilité.`
+        );
+        return;
+      }
     }
 
     setIsLoading(true);
@@ -121,14 +175,15 @@ const DonationForm = () => {
           <ArrowLeft size={20} />
           Retour
         </button>
-        <h1>Enregistrer un Don</h1>
-        <p>Centre : {centerName}</p>
+
       </div>
 
       {/* Formulaire */}
       <form onSubmit={handleSubmit} className="donation-form">
         {/* Date du don */}
         <div className="form-group">
+                <h1>Enregistrer un Don</h1>
+        <p>Centre : {centerName}</p>
           <label className="form-label">
             <Calendar size={20} />
             Date du don
