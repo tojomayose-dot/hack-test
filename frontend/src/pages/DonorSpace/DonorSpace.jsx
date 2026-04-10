@@ -117,6 +117,22 @@ const DonorSpace = () => {
     }
   };
 
+  // Fonction de déconnexion avec confirmation
+  const handleLogout = () => {
+    const confirmLogout = window.confirm('Êtes-vous sûr de vouloir vous déconnecter ?');
+    if (confirmLogout) {
+      // Supprimer les données utilisateur du localStorage
+      localStorage.removeItem('user');
+      localStorage.removeItem('userId');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('userPhone');
+      localStorage.removeItem('bloodGroup');
+
+      // Rediriger vers la page d'accueil public
+      navigate('/');
+    }
+  };
+
   // Centres de collecte simulés (avec IDs d'hôpitaux réels)
   const centers = [
     {
@@ -170,20 +186,32 @@ const DonorSpace = () => {
     <div className="donor-space">
       {/* Onglets */}
       <div className="tabs-container">
-        <button
-          className={`tab-button ${activeTab === 'profile' ? 'active' : ''}`}
-          onClick={() => setActiveTab('profile')}
-        >
-          <User size={20} />
-          Mon Profil
-        </button>
-        <button
-          className={`tab-button ${activeTab === 'centers' ? 'active' : ''}`}
-          onClick={() => setActiveTab('centers')}
-        >
-          <MapPin size={20} />
-          Points de Collecte
-        </button>
+        <div className="tabs-left">
+          <button
+            className={`tab-button ${activeTab === 'profile' ? 'active' : ''}`}
+            onClick={() => setActiveTab('profile')}
+          >
+            <User size={20} />
+            Mon Profil
+          </button>
+          <button
+            className={`tab-button ${activeTab === 'centers' ? 'active' : ''}`}
+            onClick={() => setActiveTab('centers')}
+          >
+            <MapPin size={20} />
+            Points de Collecte
+          </button>
+        </div>
+        <div className="tabs-right">
+          <button
+            onClick={handleLogout}
+            className="logout-btn"
+            title="Se déconnecter"
+          >
+            <LogOut size={18} />
+            <span className="logout-text">Déconnexion</span>
+          </button>
+        </div>
       </div>
 
       {/* Contenu Mon Profil */}
@@ -208,17 +236,7 @@ const DonorSpace = () => {
                 {/* Header Card (Gauche - Grand) */}
                 <div className="header-card">
                   <div className="header-top">
-                    <button
-                      onClick={() => {
-                        localStorage.removeItem('user');
-                        localStorage.removeItem('userId');
-                        navigate('/login-donneur');
-                      }}
-                      className="logout-icon-btn"
-                      title="Déconnexion"
-                    >
-                      <LogOut size={22} />
-                    </button>
+                    {/* Bouton de déconnexion déplacé dans les onglets */}
                   </div>
 
                   <div className="avatar">
