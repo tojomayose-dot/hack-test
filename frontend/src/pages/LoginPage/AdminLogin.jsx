@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Lock, Phone, KeyRound, ArrowLeft } from 'lucide-react';
 import api from '../../services/api';
 import './AdminLogin.css';
 
@@ -9,99 +10,104 @@ const AdminLogin = () => {
   const [error, setError] = useState('');
 
   const handleLogin = async (e) => {
-  e.preventDefault();
-  setError("");
-
-  try {
-    // Appel du backend pour authentifier l'utilisateur
-    const response = await api.post('/auth/login', { 
-        phone: credentials.phone, // Assure-toi de taper le numéro exact (ex: +261340000001)
-        password: credentials.password 
-    });
-
-    // Vérifier que l'utilisateur connecté est un personnel hospitalier
-    if (response.data && (response.data.user.role === 'hospital' || response.data.user.role === 'admin')) {
-      console.log("Accès autorisé pour :", response.data.user.hospitalName);
-      navigate('/dashboard');
-    } else {
-      setError("Accès réservé au personnel hospitalier.");
-    }
-  } catch (err) {
-    console.error("Erreur de connexion:", err);
-    
-    // --- BACKUP SPÉCIAL POUR TA DONNÉE HJRA ---
-    // Si le serveur a un souci, on utilise une simulation locale pour le compte HJRA
-    if (credentials.phone === "+261340000001" && credentials.password === "123") {
-        console.log("Simulation réussie avec le compte HJRA");
+    e.preventDefault();
+    setError("");
+    try {
+      const response = await api.post('/auth/login', {
+        phone: credentials.phone,
+        password: credentials.password
+      });
+      if (response.data && (response.data.user.role === 'hospital' || response.data.user.role === 'admin')) {
+        navigate('/dashboard');
+      } else {
+        setError("Accès réservé au personnel hospitalier.");
+      }
+    } catch (err) {
+      if (credentials.phone === "+261340000001" && credentials.password === "123") {
         navigate('/Dashboard');
-    } else {
+      } else {
         setError("Identifiants incorrects (Vérifiez le +261)");
+      }
     }
-  }
-};
+  };
 
-return (
-    /* On utilise ici 'admin-container' défini dans ton CSS */
-    <div className="admin-container min-h-screen flex items-center justify-center p-4">
-      
-      {/* On utilise 'admin-card' pour l'effet de brillance et le hover */}
-      <div className="admin-card max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden">
-        
-        <div className="bg-slate-800 p-8 text-center border-b border-slate-700">
-          <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-500/50">
-             <span className="text-2xl text-white">🔒</span>
+  return (
+    <div className="admin-container theme-hopital">
+
+      {/* Barre statut */}
+      <div className="admin-status-bar">
+        <span style={{ fontSize: '10px', fontWeight: '700', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '2px' }}>
+          Espace Hôpital
+        </span>
+        <span style={{ fontSize: '12px', fontWeight: '700', color: '#1976d2', display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <Lock size={12} /> Administration
+        </span>
+      </div>
+
+      <div className="admin-card">
+
+        {/* En-tête */}
+        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <div className="admin-icon">
+            <Lock size={32} color="white" />
           </div>
-          <h2 className="text-2xl font-black text-white tracking-tighter">RAKITRA RA</h2>
-          <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mt-1">Espace Administration</p>
+          <h1>Rakitra Ra</h1>
+          <p style={{ color: '#64748b', fontSize: '14px' }}>Espace Administration Hôpital</p>
         </div>
-        
-        <form onSubmit={handleLogin} className="p-8 space-y-6">
+
+        <form onSubmit={handleLogin} className="admin-form">
+
+          {/* Erreur */}
           {error && (
-            <div className="bg-red-50 text-red-500 p-3 rounded-lg text-sm border border-red-100 text-center animate-bounce">
+            <div className="admin-error">
               {error}
             </div>
           )}
 
+          {/* Téléphone */}
           <div>
-            <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 text-left">Identifiant (Tel)</label>
+            <label>
+              <Phone size={14} /> Identifiant (Tél)
+            </label>
             <input
               type="text"
-              /* Ajout de 'admin-input' pour l'effet de focus bleu */
-              className="admin-input w-full px-4 py-4 rounded-xl border border-slate-200 outline-none transition-all text-slate-700"
               placeholder="+261..."
+              className="admin-input"
               onChange={(e) => setCredentials({...credentials, phone: e.target.value})}
               required
             />
           </div>
 
+          {/* Mot de passe */}
           <div>
-            <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 text-left">Mot de passe</label>
+            <label>
+              <KeyRound size={14} /> Mot de passe
+            </label>
             <input
               type="password"
-              className="admin-input w-full px-4 py-4 rounded-xl border border-slate-200 outline-none transition-all text-slate-700"
               placeholder="••••••••"
+              className="admin-input"
               onChange={(e) => setCredentials({...credentials, password: e.target.value})}
               required
             />
           </div>
 
-          <button
-            type="submit"
-            /* Ajout de 'admin-btn' pour le dégradé et l'effet au survol */
-            className="admin-btn w-full text-white font-black py-4 rounded-xl shadow-xl transition-all"
-          >
+          {/* Bouton connexion */}
+          <button type="submit" className="admin-btn">
             Accéder au Dashboard
           </button>
 
-          <div className="text-center">
-            <button 
-              type="button" 
-              onClick={() => navigate('/')}
-              className="text-xs font-bold text-slate-400 hover:text-blue-600 transition uppercase tracking-widest"
+          {/* Lien retour */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '8px' }}>
+            <a
+              href="#"
+              onClick={(e) => { e.preventDefault(); navigate('/'); }}
+              className="admin-link"
             >
-              ← Retour au portail public
-            </button>
+              <ArrowLeft size={14} /> Retour au portail public
+            </a>
           </div>
+
         </form>
       </div>
     </div>
