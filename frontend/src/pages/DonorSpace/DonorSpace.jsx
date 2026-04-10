@@ -17,6 +17,10 @@ const DonorSpace = () => {
   const [isUpdatingAvailability, setIsUpdatingAvailability] = useState(false);
   const [availabilityMessage, setAvailabilityMessage] = useState(null);
   const [availabilityMessageType, setAvailabilityMessageType] = useState('success');
+<<<<<<< formulaire
+=======
+  const [showAllDonations, setShowAllDonations] = useState(false);
+>>>>>>> main
 
   // Récupération des données du donneur connecté
   const storedUserJson = localStorage.getItem('user');
@@ -116,6 +120,25 @@ const DonorSpace = () => {
     }
   };
 
+<<<<<<< formulaire
+=======
+  // Fonction de déconnexion avec confirmation
+  const handleLogout = () => {
+    const confirmLogout = window.confirm('Êtes-vous sûr de vouloir vous déconnecter ?');
+    if (confirmLogout) {
+      // Supprimer les données utilisateur du localStorage
+      localStorage.removeItem('user');
+      localStorage.removeItem('userId');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('userPhone');
+      localStorage.removeItem('bloodGroup');
+
+      // Rediriger vers la page d'accueil public
+      navigate('/');
+    }
+  };
+
+>>>>>>> main
   // Centres de collecte simulés (avec IDs d'hôpitaux réels)
   const centers = [
     {
@@ -169,20 +192,32 @@ const DonorSpace = () => {
     <div className="donor-space">
       {/* Onglets */}
       <div className="tabs-container">
-        <button
-          className={`tab-button ${activeTab === 'profile' ? 'active' : ''}`}
-          onClick={() => setActiveTab('profile')}
-        >
-          <User size={20} />
-          Mon Profil
-        </button>
-        <button
-          className={`tab-button ${activeTab === 'centers' ? 'active' : ''}`}
-          onClick={() => setActiveTab('centers')}
-        >
-          <MapPin size={20} />
-          Points de Collecte
-        </button>
+        <div className="tabs-left">
+          <button
+            className={`tab-button ${activeTab === 'profile' ? 'active' : ''}`}
+            onClick={() => setActiveTab('profile')}
+          >
+            <User size={20} />
+            Mon Profil
+          </button>
+          <button
+            className={`tab-button ${activeTab === 'centers' ? 'active' : ''}`}
+            onClick={() => setActiveTab('centers')}
+          >
+            <MapPin size={20} />
+            Points de Collecte
+          </button>
+        </div>
+        <div className="tabs-right">
+          <button
+            onClick={handleLogout}
+            className="logout-btn"
+            title="Se déconnecter"
+          >
+            <LogOut size={18} />
+            <span className="logout-text">Déconnexion</span>
+          </button>
+        </div>
       </div>
 
       {/* Contenu Mon Profil */}
@@ -207,17 +242,7 @@ const DonorSpace = () => {
                 {/* Header Card (Gauche - Grand) */}
                 <div className="header-card">
                   <div className="header-top">
-                    <button
-                      onClick={() => {
-                        localStorage.removeItem('user');
-                        localStorage.removeItem('userId');
-                        navigate('/login-donneur');
-                      }}
-                      className="logout-icon-btn"
-                      title="Déconnexion"
-                    >
-                      <LogOut size={22} />
-                    </button>
+                    {/* Bouton de déconnexion déplacé dans les onglets */}
                   </div>
 
                   <div className="avatar">
@@ -317,7 +342,7 @@ const DonorSpace = () => {
                   </div>
                 ) : (
                   <div className="donations-list">
-                    {donations.map(donation => (
+                    {(showAllDonations ? donations : donations.slice(0, 3)).map(donation => (
                       <div key={donation._id} className="donation-card">
                         <div className="donation-left">
                           <h3 className="donation-hospital">
@@ -334,7 +359,7 @@ const DonorSpace = () => {
                             </span>
                           </div>
                         </div>
-                        <div className="donation-status">
+                        <div className={`donation-status ${donation.status === 'completed' ? 'status-completed' : donation.status === 'pending' ? 'status-pending' : ''}`}>
                           {donation.status === 'completed' || donation.status === 'pending'
                             ? (donation.status === 'completed' ? 'Complété' : 'En attente')
                             : donation.status
@@ -342,6 +367,22 @@ const DonorSpace = () => {
                         </div>
                       </div>
                     ))}
+                    {donations.length > 3 && !showAllDonations && (
+                      <button
+                        onClick={() => setShowAllDonations(true)}
+                        className="see-more-btn"
+                      >
+                        Voir plus ({donations.length - 3} autres)
+                      </button>
+                    )}
+                    {showAllDonations && donations.length > 3 && (
+                      <button
+                        onClick={() => setShowAllDonations(false)}
+                        className="see-less-btn"
+                      >
+                        Voir moins
+                      </button>
+                    )}
                   </div>
                 )}
               </div>
