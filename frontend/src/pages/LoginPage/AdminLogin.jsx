@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Lock, Phone, KeyRound, ArrowLeft } from 'lucide-react';
 import api from '../../services/api';
+import TechPatternBackground from '../../components/TechPatternBackground';
 import './AdminLogin.css';
 
 const AdminLogin = () => {
@@ -33,6 +34,7 @@ const AdminLogin = () => {
 
   return (
     <div className="admin-container theme-hopital">
+      <TechPatternBackground themeColor="dark" />
 
       {/* Barre statut */}
       <div className="admin-status-bar">
