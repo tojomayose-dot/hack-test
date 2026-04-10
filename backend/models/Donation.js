@@ -27,12 +27,13 @@ const donationSchema = new mongoose.Schema({
     required: true
   },
 
-  // Quantité donnée (en ml)
-  amount: {
-    type: Number,
-    default: 450,
-    required: true
-  },
+    // Volume en ml
+    volume: {
+        type: Number,
+        default: 450,
+        min: 100,
+        max: 1000
+    },
 
   // Statut du don
   status: {
