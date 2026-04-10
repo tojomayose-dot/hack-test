@@ -113,18 +113,9 @@ const Register = () => {
               type="password"
               placeholder="••••••••"
               className="auth-form-input"
-            <button
-              onClick={() => navigate('/login-donneur')}
-              className="block w-full text-sm font-semibold text-white bg-red-500 hover:bg-red-600 py-2 rounded-lg transition"
-            >
-              Accès Espace Donneur
-            </button>
-            <button
-              onClick={() => navigate('/admin')}
-              className="text-xs text-slate-400 hover:text-blue-500 underline transition"
-            >
-              Accès Administration Hôpital
-            </button>
+              onChange={(e) => setFormData({...formData, password: e.target.value})}
+              required
+            />
           </div>
 
           <button
@@ -139,6 +130,22 @@ const Register = () => {
             S'inscrire comme donneur
           </button>
         </form>
+
+        {/* Liens alternatifs vers les autres pages */}
+        <div className="mt-6 flex flex-col gap-3">
+          <button
+            onClick={() => navigate('/login-donneur')}
+            className="block w-full text-sm font-semibold text-white bg-red-500 hover:bg-red-600 py-2 rounded-lg transition"
+          >
+            Accès Espace Donneur
+          </button>
+          <button
+            onClick={() => navigate('/admin')}
+            className="text-sm text-slate-400 hover:text-blue-500 underline transition text-center"
+          >
+            Accès Administration Hôpital
+          </button>
+        </div>
       </div>
     </div>
   );

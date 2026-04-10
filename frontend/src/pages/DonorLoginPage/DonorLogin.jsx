@@ -9,10 +9,30 @@ const DonorLogin = () => {
   const navigate = useNavigate();
 
   // Gestion de la connexion du donneur
-  // Actuellement simulée pour la démo
-  const handleDonorLogin = (e) => {
+  // Simulation avec utilisateur de test pour la démo
+  const handleDonorLogin = async (e) => {
     e.preventDefault();
-    if (phone) navigate('/donor-space');
+    if (!phone) return;
+
+    try {
+      // Simulation d'une connexion avec l'utilisateur de test
+      // En production, ceci serait un vrai appel API
+      const testUser = {
+        id: '69d8a1da379b426856e7f8ee', // ID du donneur de test créé
+        name: 'Donneur Test',
+        role: 'donor'
+      };
+
+      // Stocker l'ID utilisateur dans localStorage
+      localStorage.setItem('userId', testUser.id);
+      localStorage.setItem('userName', testUser.name);
+      localStorage.setItem('userRole', testUser.role);
+
+      navigate('/donor-space');
+    } catch (error) {
+      console.error('Erreur de connexion:', error);
+      alert('Erreur de connexion. Veuillez réessayer.');
+    }
   };
 
   return (

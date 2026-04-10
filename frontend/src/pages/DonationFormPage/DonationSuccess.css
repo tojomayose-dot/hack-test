@@ -1,0 +1,385 @@
+/* ================================================================
+   DONATION SUCCESS - PAGE DE CONFIRMATION
+   ================================================================ */
+
+:root {
+  --bg-dark: #0f1419;
+  --bg-card: #1a1f2e;
+  --bg-hover: #242d3d;
+  --text-primary: #f5f5f0;
+  --text-secondary: #a8aaa8;
+  --accent-red: #e63946;
+  --accent-red-hover: #d62828;
+  --success: #06b6d4;
+}
+
+.success-container {
+  min-height: 100vh;
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Plus Jakarta Sans', sans-serif;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================================================================
+   ANIMATION DE CŒUR
+   ================================================================ */
+
+.success-animation {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+
+.heart-pulse {
+  animation: heartbeat 1s ease-in-out infinite;
+}
+
+@keyframes heartbeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+.checkmark-badge {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  animation: bounceIn 0.8s ease-out 0.5s both;
+  background-color: var(--bg-card);
+  border-radius: 50%;
+  padding: 8px;
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+  }
+  70% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* ================================================================
+   CONTENU DE SUCCÈS
+   ================================================================ */
+
+.success-content {
+  max-width: 600px;
+  margin-bottom: 40px;
+  animation: slideUp 0.8s ease-out 0.2s both;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.success-title {
+  font-size: 36px;
+  font-weight: 800;
+  margin: 0 0 16px 0;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, var(--accent-red), var(--success));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.success-message {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin: 0 0 12px 0;
+  line-height: 1.5;
+}
+
+.success-subtitle {
+  font-size: 16px;
+  color: var(--text-secondary);
+  margin: 0 0 32px 0;
+  line-height: 1.5;
+}
+
+.success-subtitle strong {
+  color: var(--accent-red);
+}
+
+/* ================================================================
+   DÉTAILS DU DON
+   ================================================================ */
+
+.donation-details {
+  background-color: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.detail-item:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.detail-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.detail-value.status-confirmed {
+  color: var(--success);
+}
+
+/* ================================================================
+   BOÎTE D'INSPIRATION
+   ================================================================ */
+
+.inspiration-box {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(230, 57, 70, 0.05));
+  border: 1px solid rgba(6, 182, 212, 0.2);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 32px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+.inspiration-box p {
+  margin: 0;
+}
+
+.inspiration-box strong {
+  color: var(--accent-red);
+  font-weight: 700;
+}
+
+/* ================================================================
+   BOUTONS D'ACTION
+   ================================================================ */
+
+.success-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 40px;
+}
+
+.secondary-button,
+.primary-button {
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+}
+
+.secondary-button {
+  background-color: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--text-primary);
+}
+
+.secondary-button:hover {
+  background-color: var(--bg-hover);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.primary-button {
+  background: linear-gradient(135deg, var(--accent-red), var(--accent-red-hover));
+  color: white;
+  box-shadow: 0 4px 16px rgba(230, 57, 70, 0.2);
+}
+
+.primary-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(230, 57, 70, 0.3);
+}
+
+/* ================================================================
+   SECTION CONSEILS
+   ================================================================ */
+
+.tips-section {
+  background-color: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 24px;
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.tips-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 16px 0;
+  text-align: center;
+  color: var(--accent-red);
+}
+
+.tips-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+}
+
+.tips-list li {
+  font-size: 14px;
+  color: var(--text-secondary);
+  padding: 10px;
+  border-radius: 8px;
+  background-color: rgba(230, 57, 70, 0.06);
+  border-left: 3px solid var(--accent-red);
+  line-height: 1.4;
+}
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+
+@media (max-width: 640px) {
+  .success-container {
+    padding: 16px;
+  }
+
+  .success-title {
+    font-size: 28px;
+  }
+
+  .success-message {
+    font-size: 16px;
+  }
+
+  .success-subtitle {
+    font-size: 14px;
+  }
+
+  .success-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  .tips-section {
+    padding: 20px;
+  }
+
+  .tips-title {
+    font-size: 15px;
+  }
+
+  .tips-list li {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .success-animation {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 24px;
+  }
+
+  .success-title {
+    font-size: 24px;
+  }
+
+  .success-message {
+    font-size: 14px;
+  }
+
+  .donation-details {
+    padding: 16px;
+  }
+
+  .detail-label {
+    font-size: 12px;
+  }
+
+  .detail-value {
+    font-size: 14px;
+  }
+
+  .inspiration-box {
+    padding: 16px;
+    font-size: 13px;
+  }
+
+  .secondary-button,
+  .primary-button {
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+}
