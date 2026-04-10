@@ -19,7 +19,8 @@ const DonationForm = () => {
   }, [hospitalId, navigate]);
 
   // Récupération de l'ID du donneur connecté (via localStorage)
-  const donorId = localStorage.getItem('userId');
+  const storedUser = JSON.parse(localStorage.getItem('user') || 'null');
+  const donorId = localStorage.getItem('userId') || storedUser?._id || '';
 
   // Vérification d'authentification : rediriger si non connecté
   React.useEffect(() => {

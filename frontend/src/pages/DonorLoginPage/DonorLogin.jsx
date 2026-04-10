@@ -11,9 +11,21 @@ const DonorLogin = () => {
 
   // Gestion de la connexion du donneur
   // Actuellement simulée pour la démo
-  const handleDonorLogin = (e) => {
+  const handleDonorLogin = async (e) => {
     e.preventDefault();
-    if (phone) navigate('/donor-space');
+    if (phone) {
+      // Simulation de la connexion - en production, ceci serait un appel API
+      const mockUser = {
+        _id: '69d88868795e3a58b14e3337', // ID réel du premier donneur dans la DB
+        name: 'Jean Dupont',
+        phone: phone,
+        bloodGroup: 'O+',
+        role: 'donor'
+      };
+      localStorage.setItem('user', JSON.stringify(mockUser));
+      localStorage.setItem('userId', mockUser._id);
+      navigate('/donor-space');
+    }
   };
 
   return (

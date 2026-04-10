@@ -76,6 +76,30 @@
 }
 
 /* --- BOUTON CONNEXION (LINEAR GRADIENT) --- */
+.donor-subtitle {
+    color: #64748b;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+}
+
+.input-box {
+    background: #f1f5f9;
+    padding: 1rem;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+}
+
+.input-box input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #1e293b;
+    width: 100%;
+    font-weight: 600;
+}
 
 .donor-btn {
   background: linear-gradient(135deg, #d32f2f, #b71c1c);
