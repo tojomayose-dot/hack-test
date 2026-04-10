@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 // Register
 router.post('/register', async (req, res) => {
@@ -29,6 +30,34 @@ router.post('/register', async (req, res) => {
 
     } catch (err) {
         res.status(400).json({ error: err.message });
+    }
+});
+
+// Login
+router.post('/login', async (req, res) => {
+    try {
+        const { phone, password } = req.body;
+
+        const user = await User.findOne({ phone });
+        if (!user) {
+            return res.status(400).json({ error: "Utilisateur non trouvé" });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ error: "Mot de passe incorrect" });
+        }
+
+        const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET || 'secret', { expiresIn: '1h' });
+
+        res.json({
+            message: "Connexion réussie",
+            token,
+            user: { id: user._id, name: user.name, role: user.role }
+        });
+
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
 });
 

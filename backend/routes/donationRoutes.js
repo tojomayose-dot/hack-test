@@ -33,7 +33,7 @@ router.post('/', async (req, res) => {
 router.get('/:donorId', async (req, res) => {
     try {
         const history = await Donation.find({ donorId: req.params.donorId })
-            .populate('hospitalId', 'hospitalName location');
+            .populate('hospitalId', 'name location');
 
         res.json(history);
     } catch (err) {

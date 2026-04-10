@@ -7,6 +7,7 @@ const Register = () => {
   const navigate = useNavigate();
   const [backendStatus, setBackendStatus] = useState("Vérification...");
   const [formData, setFormData] = useState({
+    name: '',
     phone: '',
     password: '',
     role: 'donor',
@@ -50,6 +51,17 @@ const Register = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 mb-1">Nom complet</label>
+            <input
+              type="text"
+              placeholder="Ex: Jean Rakoto"
+              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none"
+              onChange={(e) => setFormData({...formData, name: e.target.value})}
+              required
+            />
+          </div>
+
           <div>
             <label className="block text-sm font-semibold text-slate-700 mb-1">Téléphone</label>
             <input

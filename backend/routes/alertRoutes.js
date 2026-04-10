@@ -21,7 +21,7 @@ router.post('/send', async (req, res) => {
         });
 
         // Simulation SMS
-        console.log(`🚨 Alerte envoyée par ${hospital.hospitalName}`);
+        console.log(`🚨 Alerte envoyée par ${hospital.name}`);
         console.log(`${donors.length} donneurs notifiés`);
 
         // Sauvegarde en DB
