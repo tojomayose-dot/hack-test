@@ -9,24 +9,11 @@ const DonorLogin = () => {
   const [phone, setPhone] = useState('');
   const [error, setError] = useState('');
 
-  const handleDonorLogin = async (e) => {
+  // Gestion de la connexion du donneur
+  // Actuellement simulée pour la démo
+  const handleDonorLogin = (e) => {
     e.preventDefault();
-    setError('');
-    try {
-      const response = await api.post('/auth/login', { phone });
-      if (response.data && response.data.user.role === 'donor') {
-        navigate('/donor-space');
-      } else {
-        setError("Accès réservé aux donneurs.");
-      }
-    } catch (err) {
-      // Simulation pour la démo
-      if (phone) {
-        navigate('/donor-space');
-      } else {
-        setError("Veuillez entrer votre numéro de téléphone.");
-      }
-    }
+    if (phone) navigate('/donor-space');
   };
 
   return (

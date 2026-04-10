@@ -122,16 +122,23 @@ const Register = () => {
 
           {/* Mot de passe */}
           <div>
-            <label><Lock size={14} /> Mot de passe</label>
-            <div className="input-with-icon">
-              <Lock size={16} color="#94a3b8" />
-              <input
-                type="password"
-                placeholder="••••••••"
-                onChange={(e) => setFormData({...formData, password: e.target.value})}
-                required
-              />
-            </div>
+            <label className="block text-sm font-semibold text-slate-700 mb-1">Mot de passe</label>
+            <input
+              type="password"
+              placeholder="••••••••"
+              className="auth-form-input"
+            <button
+              onClick={() => navigate('/login-donneur')}
+              className="block w-full text-sm font-semibold text-white bg-red-500 hover:bg-red-600 py-2 rounded-lg transition"
+            >
+              Accès Espace Donneur
+            </button>
+            <button
+              onClick={() => navigate('/admin')}
+              className="text-xs text-slate-400 hover:text-blue-500 underline transition"
+            >
+              Accès Administration Hôpital
+            </button>
           </div>
 
           {/* Bouton S'inscrire */}
@@ -163,6 +170,22 @@ const Register = () => {
           </div>
 
         </form>
+
+        {/* Liens alternatifs vers les autres pages */}
+        <div className="mt-6 flex flex-col gap-3">
+          <button
+            onClick={() => navigate('/login-donneur')}
+            className="block w-full text-sm font-semibold text-white bg-red-500 hover:bg-red-600 py-2 rounded-lg transition"
+          >
+            Accès Espace Donneur
+          </button>
+          <button
+            onClick={() => navigate('/admin')}
+            className="text-sm text-slate-400 hover:text-blue-500 underline transition text-center"
+          >
+            Accès Administration Hôpital
+          </button>
+        </div>
       </div>
     </div>
   );
