@@ -192,6 +192,10 @@
     margin-top: 2rem;
 }
 
+.search-field input {
+    color: var(--text-muted);
+}
+
 .field-icon {
     position: absolute;
     left: 14px;
