@@ -175,14 +175,15 @@ const DonationForm = () => {
           <ArrowLeft size={20} />
           Retour
         </button>
-        <h1>Enregistrer un Don</h1>
-        <p>Centre : {centerName}</p>
+
       </div>
 
       {/* Formulaire */}
       <form onSubmit={handleSubmit} className="donation-form">
         {/* Date du don */}
         <div className="form-group">
+          <h1 style={{ color: '#1e293b' }}>Enregistrer un Don</h1>
+          <p>Centre : {centerName}</p>
           <label className="form-label">
             <Calendar size={20} />
             Date du don
