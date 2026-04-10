@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Heart, User, Phone, MapPin, Lock, Droplets, UserCheck, Hospital } from 'lucide-react';
 import api from '../../services/api';
 import './Register.css';
 
@@ -16,7 +17,6 @@ const Register = () => {
     isAvailable: true
   });
 
-  // Vérifier si le backend est disponible pour éviter les inscriptions sans serveur
   useEffect(() => {
     api.get('/stats')
       .then(() => setBackendStatus("Connecté ✅"))
@@ -25,7 +25,6 @@ const Register = () => {
 
   const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
-  // Envoi du formulaire d'inscription vers le backend
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -39,105 +38,130 @@ const Register = () => {
 
   return (
     <div className="auth-container theme-donneur">
-      {/* Indicateur de connexion au backend */}
-      <div className="max-w-md w-full mb-4 flex justify-between items-center bg-white px-4 py-2 rounded-full shadow-sm border border-slate-100">
-        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Serveur</span>
-        <span className={`text-xs font-bold ${backendStatus.includes('✅') ? 'text-green-500' : 'text-red-500'}`}>
+
+      {/* Barre statut */}
+      <div className="auth-status-bar">
+        <span style={{ fontSize: '10px', fontWeight: '700', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '2px' }}>
+          Serveur
+        </span>
+        <span style={{ fontSize: '12px', fontWeight: '700', color: backendStatus.includes('✅') ? '#22c55e' : '#ef4444' }}>
           {backendStatus}
         </span>
       </div>
 
       <div className="auth-card">
-        <div className="text-center mb-8">
+
+        {/* En-tête */}
+        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <div className="auth-icon">
+            <Heart size={32} color="white" className="pulse-icon" fill="white" />
+          </div>
           <h1>Rakitra Ra</h1>
-          <p className="text-slate-500 text-sm">Sauvez des vies en un clic</p>
+          <p style={{ color: '#64748b', fontSize: '14px' }}>Sauvez des vies en un clic</p>
         </div>
 
         <form onSubmit={handleSubmit} className="auth-form">
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-1">Nom complet</label>
-            <input
-              type="text"
-              placeholder="Ex: Jean Rakoto"
-              className="auth-form-input"
-              onChange={(e) => setFormData({...formData, name: e.target.value})}
-              required
-            />
-          </div>
 
+          {/* Nom complet */}
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-1">Téléphone</label>
-            <input
-              type="text"
-              placeholder="034 00 000 00"
-              className="auth-form-input"
-              onChange={(e) => setFormData({...formData, phone: e.target.value})}
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-1">Quartier</label>
-            <input
-              type="text"
-              placeholder="Ex: Ankatso"
-              className="auth-form-input"
-              onChange={(e) => setFormData({...formData, location: e.target.value})}
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-2">Groupe Sanguin</label>
-            <div className="grid grid-cols-4 gap-2">
-              {bloodGroups.map((group) => (
-                <button
-                  key={group}
-                  type="button"
-                  onClick={() => setFormData({...formData, bloodGroup: group})}
-                  className={`py-2 rounded-lg border-2 font-bold transition ${
-                    formData.bloodGroup === group
-                    ? 'border-blue-600 bg-blue-50 text-blue-600'
-                    : 'border-slate-100 text-slate-400 hover:border-slate-200'
-                  }`}
-                >
-                  {group}
-                </button>
-              ))}
+            <label><User size={14} /> Nom complet</label>
+            <div className="input-with-icon">
+              <User size={16} color="#94a3b8" />
+              <input
+                type="text"
+                placeholder="Ex: Jean Rakoto"
+                onChange={(e) => setFormData({...formData, name: e.target.value})}
+                required
+              />
             </div>
           </div>
 
+          {/* Téléphone */}
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-1">Mot de passe</label>
-            <input
-              type="password"
-              placeholder="••••••••"
-              className="auth-form-input"
-            <button
-              onClick={() => navigate('/login-donneur')}
-              className="block w-full text-sm font-semibold text-white bg-red-500 hover:bg-red-600 py-2 rounded-lg transition"
-            >
-              Accès Espace Donneur
-            </button>
-            <button
-              onClick={() => navigate('/admin')}
-              className="text-xs text-slate-400 hover:text-blue-500 underline transition"
-            >
-              Accès Administration Hôpital
-            </button>
+            <label><Phone size={14} /> Téléphone</label>
+            <div className="input-with-icon">
+              <Phone size={16} color="#94a3b8" />
+              <input
+                type="text"
+                placeholder="034 00 000 00"
+                onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                required
+              />
+            </div>
           </div>
 
+          {/* Quartier */}
+          <div>
+            <label><MapPin size={14} /> Quartier</label>
+            <div className="input-with-icon">
+              <MapPin size={16} color="#94a3b8" />
+              <input
+                type="text"
+                placeholder="Ex: Ankatso"
+                onChange={(e) => setFormData({...formData, location: e.target.value})}
+                required
+              />
+            </div>
+          </div>
+
+          {/* Groupe sanguin */}
+          <div>
+            <label><Droplets size={14} /> Groupe Sanguin</label>
+            <select
+              value={formData.bloodGroup || ''}
+              onChange={(e) => setFormData({...formData, bloodGroup: e.target.value})}
+              className="auth-select"
+            >
+              <option value="" disabled>-- Sélectionner --</option>
+              {bloodGroups.map((group) => (
+                <option key={group} value={group}>{group}</option>
+              ))}
+              <option value="inconnu">Je ne connais pas mon groupe sanguin</option>
+            </select>
+          </div>
+
+          {/* Mot de passe */}
+          <div>
+            <label><Lock size={14} /> Mot de passe</label>
+            <div className="input-with-icon">
+              <Lock size={16} color="#94a3b8" />
+              <input
+                type="password"
+                placeholder="••••••••"
+                onChange={(e) => setFormData({...formData, password: e.target.value})}
+                required
+              />
+            </div>
+          </div>
+
+          {/* Bouton S'inscrire */}
           <button
             type="submit"
             disabled={backendStatus.includes('❌')}
             className="submit-btn"
-            style={{
-              background: backendStatus.includes('❌') ? '#cbd5e1' : 'var(--primary-color)',
-              cursor: backendStatus.includes('❌') ? 'not-allowed' : 'pointer'
-            }}
           >
+            <Heart size={18} fill="white" />
             S'inscrire comme donneur
           </button>
+
+          {/* Liens du bas */}
+          <div className="auth-links">
+            <a
+              href="#"
+              onClick={(e) => { e.preventDefault(); navigate('/login-donneur'); }}
+              className="auth-link-donor"
+            >
+              <UserCheck size={14} /> Accès Espace Donneur
+            </a>
+            <a
+              href="#"
+              onClick={(e) => { e.preventDefault(); navigate('/admin'); }}
+              className="auth-link-admin"
+            >
+              <Hospital size={14} /> Accès Administration Hôpital
+            </a>
+          </div>
+
         </form>
       </div>
     </div>
