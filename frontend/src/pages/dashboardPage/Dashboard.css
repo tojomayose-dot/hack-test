@@ -137,7 +137,7 @@
 }
 
 .panel-card {
-    background: var(--bg-card);
+    background: linear-gradient(135deg, #524e4e 0%, #5f5a5a 20%, #1f1e1e 50%, #000000 100%);
     padding: 1.25rem; /* Reduced */
     border-radius: 16px; /* Rounded corners */
     border: 1px solid var(--border-color); /* Fine border */
@@ -149,7 +149,7 @@
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: var(--text-muted);
+    color: white;
     margin-bottom: 1.25rem; /* Reduced */
     display: flex;
     align-items: center;
@@ -420,6 +420,14 @@
     background: #4338ca;
     transform: translateY(-1px); /* Subtle hover */
     box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.action-btn {
+    padding: 5px;
+    border-radius: 5px;
+    border: none;
+    margin-right: 3px;
+    cursor: pointer;
 }
 
 .action-btn.alert-btn {

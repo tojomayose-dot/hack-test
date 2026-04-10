@@ -195,15 +195,15 @@ const Dashboard = () => {
             </h3>
             <div className="mini-stats">
               <div className="stat-item">
-                <div className="stat-value" style={{color: '#0ea5e9'}}>👥 {stats.totalDonors || 0}</div>
+                <div className="stat-value" style={{color: '#0ea5e9'}}> {stats.totalDonors || 0} <br /> <i className="fa-solid fa-users"></i></div>
                 <span className="stat-label">Total donneurs</span>
               </div>
               <div className="stat-item">
-                <div className="stat-value" style={{color: '#10b981'}}>✅ {stats.availableDonors || 0}</div>
+                <div className="stat-value" style={{color: '#10b981'}}> {stats.availableDonors || 0} <br /> <i className="fa-solid fa-circle-check"></i></div>
                 <span className="stat-label">Disponibles</span>
               </div>
               <div className="stat-item">
-                <div className="stat-value" style={{color: '#ef4444'}}>💉 {stats.totalDonations || 0}</div>
+                <div className="stat-value" style={{color: '#ef4444'}}> {stats.totalDonations || 0} <br /> <i className="fa-solid fa-syringe"></i></div>
                 <span className="stat-label">Dons effectués</span>
               </div>
             </div>
