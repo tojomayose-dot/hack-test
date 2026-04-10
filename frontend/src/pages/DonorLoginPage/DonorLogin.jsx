@@ -70,7 +70,7 @@ const DonorLogin = () => {
 
   return (
     <div className="donor-container theme-donneur">
-      <TechPatternBackground themeColor="blue" />
+      <TechPatternBackground themeColor="red" />
 
       {/* Barre statut */}
       <div className="donor-status-bar">
@@ -90,7 +90,7 @@ const DonorLogin = () => {
             <Heart size={32} color="white" className="pulse-icon" fill="white" />
           </div>
           <h1>Rakitra Ra</h1>
-          <p style={{ color: '#64748b', fontSize: '14px' }}>Prêt à sauver une vie aujourd'hui ?</p>
+          <p style={{ color: '#ffffff', fontSize: '14px' }}>Prêt à sauver une vie aujourd'hui ?</p>
         </div>
 
         <form onSubmit={handleDonorLogin} className="donor-form">
