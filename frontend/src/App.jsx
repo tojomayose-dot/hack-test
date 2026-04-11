@@ -7,6 +7,7 @@ import Dashboard from './pages/dashboardPage/Dashboard';
 import DonorLogin from './pages/DonorLoginPage/DonorLogin';
 import DonorSpace from './pages/DonorSpace/DonorSpace';
 import DonationForm from './pages/DonationFormPage/DonationForm';
+import Classement from './pages/Classement/Classement';
 
 function App() {
   const [status, setStatus] = useState({ loading: true, connected: false });
@@ -33,6 +34,8 @@ function App() {
         <Route path="/donor-space" element={<DonorSpace />} />
         {/* Formulaire de don avec centre sélectionné */}
         <Route path="/formulaire-don" element={<DonationForm />} />
+        {/* Classement public des héros */}
+        <Route path="/classement" element={<Classement />} />
         {/* Page de test / futur login */}
         <Route path="/login" element={<div className="p-10 text-center font-bold">Page Login (H+20)</div>} />
       </Routes>

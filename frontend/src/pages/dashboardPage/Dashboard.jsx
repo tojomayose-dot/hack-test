@@ -1,4 +1,4 @@
-// src/pages/DashboardPage/Dashboard.jsx
+// src/pages/dashboardPage/Dashboard.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -17,7 +17,9 @@ import {
   Users,
   CheckCircle,
   AlertCircle,
-  X
+  X,
+  Container,
+  Stethoscope
 } from 'lucide-react';
 import api from '../../services/api';
 import './Dashboard.css';
@@ -31,19 +33,29 @@ const Dashboard = () => {
   const [error, setError] = useState(null);
   const [stats, setStats] = useState({ totalDonors: 0, availableDonors: 0, totalDonations: 0 });
   const [alerts, setAlerts] = useState([]);
+  const [stocks, setStocks] = useState([]);
+  
+  // États pour l'alerte URGENCE (Groupe)
   const [showAlertModal, setShowAlertModal] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [alertGroupSelected, setAlertGroupSelected] = useState('O+');
   const [sendingAlert, setSendingAlert] = useState(false);
 
-  // Charger les statistiques et la liste des donneurs au premier rendu
+  // États pour l'alerte INDIVIDUELLE (SMS)
+  const [showIndividualModal, setShowIndividualModal] = useState(false);
+  const [selectedDonor, setSelectedDonor] = useState(null);
+  const [individualMessage, setIndividualMessage] = useState('');
+  const [sendingSms, setSendingSms] = useState(false);
+
+  const hospitalId = localStorage.getItem('hospitalId') || 'default-hospital-id';
+
   useEffect(() => {
     fetchStats();
     fetchDonors();
     fetchAlerts();
+    fetchStocks();
   }, []);
 
-  // Récupérer les statistiques globales du tableau de bord
   const fetchStats = async () => {
     try {
       const response = await api.get('/stats');
@@ -53,19 +65,13 @@ const Dashboard = () => {
     }
   };
 
-  // Récupérer les donneurs depuis le backend, filtrés par groupe sanguin si nécessaire
   const fetchDonors = async (group = '', location = '') => {
     setLoading(true);
     setError(null);
-
     try {
       const response = await api.get('/donors/search', {
-        params: {
-          bloodGroup: group,
-          location: location
-        }
+        params: { bloodGroup: group, location: location }
       });
-
       setDonors(response.data || []);
     } catch (err) {
       console.error(err);
@@ -75,7 +81,6 @@ const Dashboard = () => {
     }
   };
 
-  // Charger des alertes de démonstration pour l'historique
   const fetchAlerts = async () => {
     try {
       const res = await api.get('/alerts');
@@ -85,60 +90,100 @@ const Dashboard = () => {
     }
   };
 
-  // Envoyer une alerte d'urgence aux donneurs compatibles
+  const fetchStocks = async () => {
+    try {
+      const res = await api.get(`/stock/${hospitalId}`);
+      setStocks(res.data);
+    } catch (err) {
+      console.error("Erreur stocks:", err);
+    }
+  };
+
+  // Alerte d'urgence groupée
   const handleSendAlert = async () => {
     if (!alertMessage.trim()) {
       alert('Veuillez entrer un message');
       return;
     }
-    
     setSendingAlert(true);
     try {
       const compatibleDonors = donors.filter(d => d.bloodGroup === alertGroupSelected);
-      const hospitalId = localStorage.getItem('hospitalId');
       await api.post('/alerts/send', {
         bloodGroupNeeded: alertGroupSelected,
         message: alertMessage,
         hospitalId: hospitalId
       });
       
-      setAlerts([{
-        id: Math.random(),
-        group: alertGroupSelected,
-        count: compatibleDonors.length,
-        timestamp: 'À l\'instant',
-        status: 'sent'
-      }, ...alerts]);
-      
+      fetchAlerts();
       setShowAlertModal(false);
       setAlertMessage('');
-      alert(`✅ Alerte envoyée à ${compatibleDonors.length} donneurs ${alertGroupSelected}!`);
+      alert(`✅ Alerte envoyée aux donneurs ${alertGroupSelected}!`);
     } catch (err) {
       console.error("Erreur alerte:", err);
-      alert('❌ Erreur lors de l\'envoi de l\'alerte');
+      alert('❌ Erreur lors de l\'envoi');
     } finally {
       setSendingAlert(false);
     }
   };
 
-  // Sélectionner ou désélectionner un groupe sanguin pour la recherche
+  // Alerte individuelle (SIMULATION SMS)
+  const handleSendIndividualSms = async () => {
+    if (!individualMessage.trim()) {
+      alert('Veuillez entrer un message pour le donneur');
+      return;
+    }
+    setSendingSms(true);
+    try {
+      await api.post('/alerts/individual', {
+        hospitalId,
+        donorId: selectedDonor._id,
+        message: individualMessage
+      });
+      
+      fetchAlerts();
+      setShowIndividualModal(false);
+      setIndividualMessage('');
+      alert(`✅ SMS de sécurité envoyé à ${selectedDonor.name}!`);
+    } catch (err) {
+      console.error("Erreur SMS:", err);
+      alert("❌ Échec de l'envoi du SMS");
+    } finally {
+      setSendingSms(false);
+    }
+  };
+
+  const updateStockManual = async (bloodGroup, newQuantity) => {
+    try {
+      const res = await api.patch('/stock/update', {
+        hospitalId,
+        bloodGroup,
+        quantity: newQuantity
+      });
+      fetchStocks();
+      if (res.data.autoAlertSent) {
+        alert(`🚨 STOCK ÉPUISÉ ! Une alerte automatique a été envoyée aux donneurs compatibles pour le groupe ${bloodGroup}.`);
+        fetchAlerts();
+      }
+    } catch (err) {
+      console.error("Erreur update stock:", err);
+    }
+  };
+
   const toggleGroup = (group) => {
     const newGroup = selectedGroup === group ? '' : group;
     setSelectedGroup(newGroup);
-    fetchDonors(newGroup);
+    fetchDonors(newGroup, searchQuartier);
   };
 
   useEffect(() => {
     const delay = setTimeout(() => {
       fetchDonors(selectedGroup, searchQuartier);
     }, 500);
-
     return () => clearTimeout(delay);
   }, [searchQuartier]);
 
   return (
     <div className="rakitra-dashboard">
-      {/* BARRE DE NAVIGATION HAUTE (GLASSMORPHISM) */}
       <header className="top-nav">
         <div className="nav-brand">
           <Droplet className="brand-icon" size={28} fill="currentColor" />
@@ -156,14 +201,13 @@ const Dashboard = () => {
       </header>
 
       <div className="dashboard-content">
-        {/* SECTION GAUCHE : RECHERCHE & STATS RAPIDES */}
+        {/* SECTION GAUCHE : RECHERCHE & STOCK */}
         <aside className="control-panel">
           <div className="panel-card search-card">
             <h3 className="card-title">
               <Zap size={20} className="text-primary" />
               Recherche d'Urgence
             </h3>
-            
             <div className="blood-selector-grid">
               {['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map(group => (
                 <button
@@ -175,12 +219,11 @@ const Dashboard = () => {
                 </button>
               ))}
             </div>
-
             <div className="search-field">
               <MapPin className="field-icon" size={18} />
               <input 
                 type="text" 
-                placeholder="Filtrer par quartier (ex: Anosy...)" 
+                placeholder="Filtrer par quartier..." 
                 className="field-input"
                 value={searchQuartier}
                 onChange={(e) => setSearchQuartier(e.target.value)}
@@ -191,47 +234,61 @@ const Dashboard = () => {
           <div className="panel-card stats-card">
             <h3 className="card-title">
               <Activity size={20} className="text-success" />
-              Situation en Direct
+              État du Stock Sanguin
             </h3>
-            <div className="mini-stats">
-              <div className="stat-item">
-                <div className="stat-value" style={{color: '#0ea5e9'}}> {stats.totalDonors || 0} <br /> <i className="fa-solid fa-users"></i></div>
-                <span className="stat-label">Total donneurs</span>
-              </div>
-              <div className="stat-item">
-                <div className="stat-value" style={{color: '#10b981'}}> {stats.availableDonors || 0} <br /> <i className="fa-solid fa-circle-check"></i></div>
-                <span className="stat-label">Disponibles</span>
-              </div>
-              <div className="stat-item">
-                <div className="stat-value" style={{color: '#ef4444'}}> {stats.totalDonations || 0} <br /> <i className="fa-solid fa-syringe"></i></div>
-                <span className="stat-label">Dons effectués</span>
-              </div>
+            <div className="stock-grid">
+              {stocks.map(s => (
+                <div key={s.bloodGroup} className="stock-item">
+                  <div className="stock-header">
+                    <span>Groupe {s.bloodGroup}</span>
+                    <span>{s.quantity} ml</span>
+                  </div>
+                  <div className="stock-bar-bg">
+                    <div 
+                      className={`stock-bar-fill ${s.status}`} 
+                      style={{ width: `${Math.min((s.quantity / 5000) * 100, 100)}%` }}
+                    ></div>
+                  </div>
+                  {s.quantity < 1000 && s.quantity > 0 && (
+                    <button 
+                      className="stock-near-btn"
+                      onClick={() => {
+                        setAlertGroupSelected(s.bloodGroup);
+                        setAlertMessage(`⚠️ STOCK BAS : Notre réserve de ${s.bloodGroup} est presque vide. Si vous êtes disponible, merci de passer au HJRA.`);
+                        setShowAlertModal(true);
+                      }}
+                    >
+                      Alerter (Stock Bas)
+                    </button>
+                  )}
+                  <div style={{marginTop: '5px', display: 'flex', gap: '5px'}}>
+                      <button onClick={() => updateStockManual(s.bloodGroup, Math.max(0, s.quantity - 500))} style={{fontSize: '10px'}}>-500ml</button>
+                      <button onClick={() => updateStockManual(s.bloodGroup, s.quantity + 500)} style={{fontSize: '10px'}}>+500ml</button>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
-          <button 
-            onClick={() => setShowAlertModal(true)}
-            className="alert-emergency-btn"
-          >
-            <Zap size={20} />
-            Alerte URGENCE
+          <button onClick={() => setShowAlertModal(true)} className="alert-emergency-btn">
+            <Zap size={20} /> Alerte GÉNÉRALE (Groupe)
           </button>
 
           <div className="panel-card alerts-history">
             <h3 className="card-title">
-              <Clock size={20} />
-              Alertes Récentes
+              <Clock size={20} /> Alerte stockage (Historique)
             </h3>
             <div className="alerts-list">
-              {alerts.slice(0, 3).map(alert => (
-                <div key={alert.id} className="alert-item">
-                  <div className="alert-group-badge">{alert.group}</div>
+              {alerts.length === 0 ? <p style={{fontSize: '12px', color: '#999'}}>Aucune alerte envoyée.</p> : 
+               alerts.slice(0, 5).map(alert => (
+                <div key={alert._id} className={`alert-item ${alert.urgencyLevel === 'critical' ? 'critical' : ''}`}>
+                  <div className="alert-group-badge">{alert.bloodGroupNeeded}</div>
                   <div className="alert-info">
-                    <span className="alert-time">{alert.timestamp}</span>
-                    <span className="alert-count">{alert.count} donneurs</span>
+                    <span className="alert-time">{new Date(alert.createdAt).toLocaleTimeString()}</span>
+                    <span className="alert-count">{alert.donorsNotified} contactés</span>
                   </div>
                   <div className={`alert-status ${alert.status}`}>
-                    {alert.status === 'sent' ? <CheckCircle size={16} /> : <AlertCircle size={16} />}
+                    <CheckCircle size={16} />
                   </div>
                 </div>
               ))}
@@ -239,7 +296,7 @@ const Dashboard = () => {
           </div>
         </aside>
 
-        {/* SECTION DROITE : RÉSULTATS (LISTE MODERNE) */}
+        {/* SECTION DROITE : LISTE DONNEURS */}
         <main className="results-panel">
           <div className="panel-header">
             <h1 className="main-title">Donneurs disponibles</h1>
@@ -247,131 +304,105 @@ const Dashboard = () => {
           </div>
 
           {loading ? (
-            <div className="loading-spinner">Connexion au réseau...</div>
-          ) : error ? (
-            <div className="error-card">
-              <AlertCircle size={48} style={{color: '#ef4444'}} />
-              <p style={{color: '#991b1b', fontWeight: 600}}>{error}</p>
-              <span style={{color: '#64748b', fontSize: '14px'}}>Démarrez le backend avec: <code>node backend/server.js</code></span>
-            </div>
+            <div className="loading-spinner">Mise à jour de la liste...</div>
           ) : (
             <div className="donors-list">
-              {donors
-                .filter(d => d.location?.toLowerCase().includes(searchQuartier.toLowerCase()))
-                .map(donor => (
-                  <div key={donor._id} className="donor-list-item">
-                    <div className={`blood-type-avatar ${donor.bloodGroup?.includes('-') ? 'type-neg' : ''}`}>
-                      {donor.bloodGroup}
-                    </div>
-                    
-                    <div className="donor-core-info">
-                      <h4>{donor.hospitalName || donor.name || "Donneur Anonyme"}</h4>
-                      <div className="info-meta">
-                        <MapPin size={14} /> {donor.location}
-                      </div>
-                    </div>
-
-                    <div className="donor-contact-info">
-                      <div className="info-meta">
-                        <Phone size={14} /> {donor.phone || '+261 -- --- --'}
-                      </div>
-                      <div className="info-meta text-muted">
-                        Dernier don : {donor.lastDonation || 'Inconnu'}
-                      </div>
-                    </div>
-
-                    <div className="donor-actions">
-                      <button 
-                        onClick={() => {
-                          setAlertGroupSelected(donor.bloodGroup);
-                          setShowAlertModal(true);
-                        }}
-                        className="action-btn alert-btn"
-                        title="Envoyer une alerte pour ce groupe sanguin"
-                      >
-                        <BellDot size={16} /> Alerter
-                      </button>
-                      <button className="action-btn call-btn" title="Appeler">
-                        <Phone size={16} />
-                      </button>
-                    </div>
+              {donors.map(donor => (
+                <div key={donor._id} className="donor-list-item">
+                  <div className={`blood-type-avatar ${donor.bloodGroup?.includes('-') ? 'type-neg' : ''}`}>
+                    {donor.bloodGroup}
                   </div>
-                ))}
-              
-              {!loading && !error && donors.length === 0 && (
-                <div className="empty-state-card">
-                  <Droplet size={48} className="text-muted" />
-                  <p>Aucun donneur ne correspond à vos critères d'urgence.</p>
-                  <span className="text-muted">Essayez d'élargir la zone géographique.</span>
+                  <div className="donor-core-info">
+                    <h4>{donor.name}</h4>
+                    <div className="info-meta"><MapPin size={14} /> {donor.location}</div>
+                  </div>
+                  <div className="donor-contact-info">
+                    <div className="info-meta"><Phone size={14} /> {donor.phone}</div>
+                    <div className="info-meta text-muted">Disponible</div>
+                  </div>
+                  <div className="donor-actions">
+                    <button 
+                      onClick={() => {
+                        setSelectedDonor(donor);
+                        setIndividualMessage(`Bonjour ${donor.name}, votre groupe ${donor.bloodGroup} est requis en urgence au HJRA. Êtes-vous disponible ?`);
+                        setShowIndividualModal(true);
+                      }}
+                      className="sms-btn"
+                    >
+                      <BellDot size={16} /> Alerter
+                    </button>
+                  </div>
                 </div>
-              )}
+              ))}
             </div>
           )}
         </main>
       </div>
 
-      {/* MODAL D'ALERTE URGENCE */}
+      {/* MODAL ALERTE GÉNÉRALE */}
       {showAlertModal && (
         <div className="modal-overlay" onClick={() => setShowAlertModal(false)}>
           <div className="modal-card" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <div>
                 <h2>🚨 Alerte URGENCE</h2>
-                <p>Envoyez une alerte aux donneurs {alertGroupSelected}</p>
+                <p>Envoyer à tous les donneurs {alertGroupSelected} compatibles</p>
               </div>
-              <button 
-                onClick={() => setShowAlertModal(false)}
-                className="modal-close-btn"
-              >
-                <X size={24} />
-              </button>
+              <button onClick={() => setShowAlertModal(false)} className="modal-close-btn"><X size={24} /></button>
             </div>
-
             <div className="modal-body">
               <div className="form-group">
                 <label>Groupe Sanguin Requis</label>
                 <div className="blood-selector-grid">
                   {['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map(group => (
-                    <button
-                      key={group}
-                      onClick={() => setAlertGroupSelected(group)}
-                      className={`blood-pill ${alertGroupSelected === group ? 'active' : ''}`}
-                    >
-                      {group}
-                    </button>
+                    <button key={group} onClick={() => setAlertGroupSelected(group)} className={`blood-pill ${alertGroupSelected === group ? 'active' : ''}`}>{group}</button>
                   ))}
                 </div>
               </div>
-
               <div className="form-group">
-                <label>Message d'Urgence</label>
-                <textarea
-                  placeholder="Ex: URGENCE AB+ - Patient critique. Besoin immédiat. Compensation: 1500 Ar"
-                  className="form-textarea"
-                  value={alertMessage}
-                  onChange={(e) => setAlertMessage(e.target.value)}
-                  rows={4}
-                />
-              </div>
-
-              <div className="alert-preview">
-                <strong>Aperçu :</strong> Cette alerte sera envoyée à <span className="highlight">{donors.filter(d => d.bloodGroup === alertGroupSelected).length} donneurs</span> disponibles du groupe <span className="highlight">{alertGroupSelected}</span>
+                <label>Message</label>
+                <textarea className="form-textarea" value={alertMessage} onChange={(e) => setAlertMessage(e.target.value)} rows={4} />
               </div>
             </div>
-
             <div className="modal-footer">
-              <button 
-                onClick={() => setShowAlertModal(false)}
-                className="btn-secondary"
-              >
-                Annuler
+              <button onClick={() => setShowAlertModal(false)} className="btn-secondary">Annuler</button>
+              <button onClick={handleSendAlert} disabled={sendingAlert} className="btn-primary">
+                {sendingAlert ? "Envoi..." : "Diffuser l'alerte"}
               </button>
-              <button 
-                onClick={handleSendAlert}
-                disabled={sendingAlert}
-                className="btn-primary"
-              >
-                {sendingAlert ? (<><Loader size={16} className="spin" /> Envoi...</>) : (<><SendHorizontal size={16} /> Envoyer Alerte</>)}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL ALERTE INDIVIDUELLE (SIMULATION SMS) */}
+      {showIndividualModal && selectedDonor && (
+        <div className="modal-overlay" onClick={() => setShowIndividualModal(false)}>
+          <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <div>
+                <h2>📱 Alerte Individuelle (SMS)</h2>
+                <p>Confirmer l'envoi d'un message de sécurité</p>
+              </div>
+              <button onClick={() => setShowIndividualModal(false)} className="modal-close-btn"><X size={24} /></button>
+            </div>
+            <div className="modal-body">
+              <div className="individual-modal-info">
+                <div className="info-row"><span>Donneur :</span> <span>{selectedDonor.name}</span></div>
+                <div className="info-row"><span>Groupe :</span> <span className="blood-badge-inline">{selectedDonor.bloodGroup}</span></div>
+                <div className="info-row"><span>Téléphone :</span> <span>{selectedDonor.phone}</span></div>
+              </div>
+              <div className="form-group">
+                <label>Contenu du SMS</label>
+                <textarea className="form-textarea" value={individualMessage} onChange={(e) => setIndividualMessage(e.target.value)} rows={3} />
+              </div>
+              <p style={{fontSize: '11px', color: '#666', fontStyle: 'italic'}}>
+                * Par mesure de sécurité, vérifiez que le groupe sanguin ({selectedDonor.bloodGroup}) correspond au besoin avant d'envoyer.
+              </p>
+            </div>
+            <div className="modal-footer">
+              <button onClick={() => setShowIndividualModal(false)} className="btn-secondary">Annuler</button>
+              <button onClick={handleSendIndividualSms} disabled={sendingSms} className="btn-primary">
+                {sendingSms ? "Envoi SMS..." : "Confirmer & Envoyer SMS"}
               </button>
             </div>
           </div>

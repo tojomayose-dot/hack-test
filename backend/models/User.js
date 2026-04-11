@@ -53,6 +53,12 @@ const userSchema = new mongoose.Schema(
         default: true,
     },
 
+    // Visibilité dans le classement (opt-in, privé par défaut)
+    est_public: {
+        type: Boolean,
+        default: false,
+    },
+
     // Spécifique HÔPITAL
     hospitalName: {
         type: String,

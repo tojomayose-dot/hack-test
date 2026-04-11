@@ -406,6 +406,36 @@
   color: #2c0a0c;
 }
 
+/* Cooldown 56 jours */
+.cooldown-info {
+  margin-top: 12px;
+  padding: 12px 16px;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  border-radius: 14px;
+  text-align: center;
+}
+
+.cooldown-days {
+  font-size: 18px;
+  font-weight: 800;
+  color: #92400e;
+  margin: 0 0 4px 0;
+}
+
+.cooldown-date {
+  font-size: 12px;
+  color: rgba(146, 64, 14, 0.75);
+  margin: 0;
+  font-weight: 600;
+}
+
+.switch-locked {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .unavailable-state,
 .loading-state {
   background: rgba(255, 255, 255, 0.65);
@@ -624,6 +654,155 @@
 }
 
 /* ================================================================
+   SECTION CONFIDENTIALITÉ & CLASSEMENT
+   ================================================================ */
+
+.privacy-section {
+  margin-bottom: 20px;
+}
+
+.privacy-card {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(99, 13, 19, 0.12);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+  transition: all 0.3s ease;
+}
+
+.privacy-card:hover {
+  background: rgba(255, 255, 255, 0.65);
+  box-shadow: var(--shadow-lg);
+}
+
+.privacy-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.privacy-icon {
+  color: #f59e0b;
+}
+
+.privacy-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #2c0a0c;
+  margin: 0;
+}
+
+.privacy-description {
+  font-size: 13px;
+  color: rgba(99, 13, 19, 0.55);
+  margin: 0 0 16px;
+  line-height: 1.5;
+}
+
+.privacy-toggle-row {
+  margin-bottom: 16px;
+}
+
+.privacy-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.privacy-switch input {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.switch-slider {
+  z-index: 0;
+}
+
+.privacy-switch input:checked + .switch-slider {
+  background: var(--success);
+}
+
+.privacy-switch input:checked + .switch-slider::before {
+  transform: translateX(24px);
+}
+
+.privacy-switch input:disabled + .switch-slider {
+  opacity: 0.65;
+}
+
+.privacy-label-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(44, 10, 12, 0.85);
+}
+
+.privacy-feedback {
+  margin-top: 12px;
+  font-size: 13px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  color: white;
+  animation: fadeIn 0.3s ease;
+}
+
+.privacy-feedback.success {
+  background: rgba(34, 197, 94, 0.18);
+  color: #166534;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.privacy-feedback.error {
+  background: rgba(220, 38, 38, 0.18);
+  color: #7f1d1d;
+  border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+.privacy-feedback.info {
+  background: rgba(99, 13, 19, 0.08);
+  color: #2c0a0c;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.classement-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.1));
+  color: #92400e;
+  border: 2px solid rgba(245, 158, 11, 0.3);
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Poppins', sans-serif;
+}
+
+.classement-link-btn:hover {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(217, 119, 6, 0.18));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+}
+
+/* ================================================================
    CENTRES
    ================================================================ */
 
@@ -812,4 +991,257 @@
   .info-section { grid-template-columns: 1fr; }
   .donor-space::before,
   .donor-space::after { display: none; }
+
+  .donor-name-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .badge-label {
+    font-size: 11px;
+    padding: 4px 10px;
+  }
+
+  .badge-toast {
+    width: 92%;
+    padding: 20px;
+  }
+
+  .badge-toast-icon {
+    font-size: 36px;
+  }
+}
+
+/* ================================================================
+   BADGE DE PROGRESSION - LABEL
+   ================================================================ */
+
+.donor-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.badge-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+  cursor: default;
+  animation: badgeAppear 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.badge-label:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.badge-emoji {
+  font-size: 15px;
+  line-height: 1;
+}
+
+.badge-titre {
+  font-weight: 800;
+}
+
+@keyframes badgeAppear {
+  0% { opacity: 0; transform: scale(0.6); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* Couleurs par niveau */
+.badge-newbie {
+  background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+  color: #3730a3;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
+}
+
+.badge-awakener {
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  color: #065f46;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+}
+
+.badge-guardian {
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  color: #1e40af;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+}
+
+.badge-pillar {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  color: #92400e;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+}
+
+.badge-phoenix {
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
+  color: #991b1b;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
+}
+
+.badge-hero {
+  background: linear-gradient(135deg, #fef9c3, #fde047, #f59e0b);
+  color: #78350f;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  box-shadow: 0 2px 12px rgba(245, 158, 11, 0.35);
+  animation: badgeAppear 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+             heroGlow 2s ease-in-out infinite;
+}
+
+@keyframes heroGlow {
+  0%, 100% { box-shadow: 0 2px 12px rgba(245, 158, 11, 0.35); }
+  50% { box-shadow: 0 4px 20px rgba(245, 158, 11, 0.55); }
+}
+
+/* ================================================================
+   TOAST NOTIFICATION DE BADGE
+   ================================================================ */
+
+.badge-toast-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: overlayFadeIn 0.3s ease forwards;
+}
+
+@keyframes overlayFadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.badge-toast {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: 28px;
+  padding: 32px 36px;
+  max-width: 440px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.18);
+  animation: toastSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+.badge-toast::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  border-radius: 28px 28px 0 0;
+}
+
+/* Barre de couleur par niveau */
+.badge-toast.badge-newbie::before {
+  background: linear-gradient(90deg, #818cf8, #6366f1);
+}
+.badge-toast.badge-awakener::before {
+  background: linear-gradient(90deg, #34d399, #10b981);
+}
+.badge-toast.badge-guardian::before {
+  background: linear-gradient(90deg, #60a5fa, #3b82f6);
+}
+.badge-toast.badge-pillar::before {
+  background: linear-gradient(90deg, #fbbf24, #f59e0b);
+}
+.badge-toast.badge-phoenix::before {
+  background: linear-gradient(90deg, #f87171, #ef4444);
+}
+.badge-toast.badge-hero::before {
+  background: linear-gradient(90deg, #fde047, #f59e0b, #fde047);
+  background-size: 200% 100%;
+  animation: heroBarShimmer 2s ease-in-out infinite;
+}
+
+@keyframes heroBarShimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes toastSlideIn {
+  0% { opacity: 0; transform: translateY(40px) scale(0.9); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.badge-toast-icon {
+  font-size: 52px;
+  margin-bottom: 16px;
+  animation: iconBounce 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s forwards;
+  opacity: 0;
+  transform: scale(0.3);
+}
+
+@keyframes iconBounce {
+  0% { opacity: 0; transform: scale(0.3); }
+  60% { opacity: 1; transform: scale(1.15); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.badge-toast-content {
+  margin-bottom: 20px;
+}
+
+.badge-toast-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #2c0a0c;
+  margin: 0 0 8px 0;
+  letter-spacing: -0.3px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.badge-toast-message {
+  font-size: 14px;
+  color: rgba(44, 10, 12, 0.7);
+  line-height: 1.6;
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+.badge-toast-close {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--gradient);
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Poppins', sans-serif;
+  box-shadow: 0 4px 15px rgba(99, 13, 19, 0.3);
+}
+
+.badge-toast-close:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(99, 13, 19, 0.4);
 }

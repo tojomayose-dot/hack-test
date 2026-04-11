@@ -47,4 +47,36 @@ router.post('/send', async (req, res) => {
     }
 });
 
+// Route POST /api/alerts/individual
+// Permet d'alerter un donneur spécifique (Simulation SMS)
+router.post('/individual', async (req, res) => {
+    try {
+        const { hospitalId, donorId, message } = req.body;
+
+        const hospital = await User.findById(hospitalId);
+        const donor = await User.findById(donorId);
+
+        if (!hospital || !donor) {
+            return res.status(404).json({ error: "Hôpital ou donneur non trouvé" });
+        }
+
+        // Simulation SMS
+        console.log(`📱 [SMS Simulation] Vers ${donor.phone}: "${message}"`);
+
+        const alert = new Alert({
+            hospitalId,
+            bloodGroupNeeded: donor.bloodGroup,
+            message: `INDIVIDUAL SMS to ${donor.name}: ${message}`,
+            status: "sent",
+            donorsNotified: 1
+        });
+
+        await alert.save();
+
+        res.json({ message: `SMS envoyé à ${donor.name}`, alert });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 module.exports = router;

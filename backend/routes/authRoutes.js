@@ -88,13 +88,13 @@ router.post('/donor-login', async (req, res) => {
 
         // Chercher l'utilisateur - essayer avec exactitude d'abord
         let user = await User.findOne({ phone: phone.trim() });
-        
+
         // Si pas trouvé, essayer avec recherche régex insensible aux espaces
         if (!user) {
             console.log('   ❌ Pas trouvé avec phone exact, essai avec regex...');
             const phoneRegex = new RegExp(cleanPhone.replace(/\+/g, '\\+'));
-            user = await User.findOne({ 
-                phone: { $regex: phoneRegex, $options: 'i' } 
+            user = await User.findOne({
+                phone: { $regex: phoneRegex, $options: 'i' }
             });
         }
 
@@ -114,7 +114,7 @@ router.post('/donor-login', async (req, res) => {
 
         // Comparer le mot de passe
         console.log('   Password DB:', user.password ? user.password.substring(0, 10) + '...' : 'VIDE');
-        
+
         // Vérifier si le password est hachéé (bcrypt commence par $2)
         const isHashed = user.password && user.password.startsWith('$2');
         console.log('   Password est hachéé:', isHashed);

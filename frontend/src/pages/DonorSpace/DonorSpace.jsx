@@ -1,8 +1,55 @@
-import React, { useState, useEffect } from 'react';
-import { Heart, User, MapPin, Phone, LogOut, Calendar, Droplet, Search, Clock, Loader } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Heart, User, MapPin, Phone, LogOut, Calendar, Droplet, Search, Clock, Loader, X, Trophy, Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import './DonorSpace.css';
+
+// Système de badges de progression
+const getBadgeInfo = (nombre_dons) => {
+  if (nombre_dons >= 20) {
+    return {
+      emoji: '🏆',
+      titre: 'Le Héros',
+      message: 'Statut Légendaire : Le don de sang fait partie de ton identité.',
+      classe: 'badge-hero',
+    };
+  } else if (nombre_dons >= 10) {
+    return {
+      emoji: '🔥',
+      titre: 'Le Phénix',
+      message: 'Prestige : Ton sang a potentiellement sauvé 30 vies !',
+      classe: 'badge-phoenix',
+    };
+  } else if (nombre_dons >= 5) {
+    return {
+      emoji: '🏛️',
+      titre: 'Le Pilier',
+      message: 'La constance ! Tu es quelqu\'un sur qui le système de santé peut compter.',
+      classe: 'badge-pillar',
+    };
+  } else if (nombre_dons >= 3) {
+    return {
+      emoji: '🛡️',
+      titre: 'Le Gardien',
+      message: 'Le plus dur est fait, le don est devenu une habitude chez toi.',
+      classe: 'badge-guardian',
+    };
+  } else if (nombre_dons >= 1) {
+    return {
+      emoji: '🌱',
+      titre: "L'Éveilleur",
+      message: 'Félicitations, tu fais désormais partie de la communauté.',
+      classe: 'badge-awakener',
+    };
+  } else {
+    return {
+      emoji: '🆕',
+      titre: 'Newbie',
+      message: 'Bienvenue ! Prêt pour ton premier acte héroïque ?',
+      classe: 'badge-newbie',
+    };
+  }
+};
 
 const DonorSpace = () => {
   const navigate = useNavigate();
@@ -18,6 +65,11 @@ const DonorSpace = () => {
   const [availabilityMessage, setAvailabilityMessage] = useState(null);
   const [availabilityMessageType, setAvailabilityMessageType] = useState('success');
   const [showAllDonations, setShowAllDonations] = useState(false);
+  const [showBadgeToast, setShowBadgeToast] = useState(false);
+  const [estPublic, setEstPublic] = useState(false);
+  const [isTogglingPrivacy, setIsTogglingPrivacy] = useState(false);
+  const [privacyMessage, setPrivacyMessage] = useState(null);
+  const [privacyMessageType, setPrivacyMessageType] = useState('success');
 
   // Récupération des données du donneur connecté
   const storedUserJson = localStorage.getItem('user');
@@ -41,16 +93,30 @@ const DonorSpace = () => {
         const donationsResponse = await api.get(`/donations/${donorId}`);
         const donationsData = donationsResponse.data || [];
 
+        // Vérifier le statut public du profil depuis la table PublicProfile
+        try {
+          const privacyResponse = await api.get(`/classement/confidentialite/${donorId}`);
+          setEstPublic(privacyResponse.data.est_public);
+        } catch (err) {
+          console.error('Erreur vérification confidentialité:', err);
+          setEstPublic(false);
+        }
+
+        // CRITIQUE : Ne compter que les dons COMPLÉTÉS pour le total et le badge
+        // Cela doit correspondre exactement à la logique du classement public
+        const completedDonations = donationsData.filter(d => String(d.status).toLowerCase() === 'completed');
+        const count = completedDonations.length;
+
         // Configuration des données du donneur
         setDonor({
           name: storedUser?.name || 'Donneur',
           bloodGroup: storedUser?.bloodGroup || 'Non défini',
           location: storedUser?.location || 'Antananarivo',
           isAvailable: storedUser?.isAvailable !== false, // true par défaut
-          lastDonation: donationsData.length > 0
-            ? donationsData.sort((a, b) => new Date(b.donationDate) - new Date(a.donationDate))[0].donationDate
+          lastDonation: count > 0
+            ? [...completedDonations].sort((a, b) => new Date(b.donationDate) - new Date(a.donationDate))[0].donationDate
             : null,
-          totalDonations: donationsData.length
+          totalDonations: count
         });
 
         setDonations(donationsData);
@@ -68,6 +134,7 @@ const DonorSpace = () => {
           lastDonation: null,
           totalDonations: 0
         });
+        setEstPublic(false);
         setDonations([]);
       } finally {
         setLoading(false);
@@ -77,10 +144,66 @@ const DonorSpace = () => {
     fetchDonorData();
   }, [donorId]);
 
+  // Effet pour détecter un upgrade de badge et afficher la notification une seule fois
+  const badgeInfo = donor ? getBadgeInfo(donor.totalDonations) : null;
+
+  useEffect(() => {
+    if (!badgeInfo || !donor) return;
+
+    const lastSeenBadge = localStorage.getItem('lastSeenBadge');
+
+    // Afficher le toast seulement si le badge a changé (upgrade)
+    if (lastSeenBadge !== badgeInfo.classe) {
+      setShowBadgeToast(true);
+      localStorage.setItem('lastSeenBadge', badgeInfo.classe);
+    }
+  }, [badgeInfo?.classe]);
+
+  // Logique de cooldown de 56 jours après un don
+  const COOLDOWN_DAYS = 56;
+  const cooldownInfo = useMemo(() => {
+    if (!donor?.lastDonation) return { isInCooldown: false, daysRemaining: 0, cooldownEndDate: null };
+
+    const lastDonDate = new Date(donor.lastDonation);
+    const cooldownEnd = new Date(lastDonDate);
+    cooldownEnd.setDate(cooldownEnd.getDate() + COOLDOWN_DAYS);
+
+    const now = new Date();
+    const isInCooldown = now < cooldownEnd;
+    const daysRemaining = isInCooldown ? Math.ceil((cooldownEnd - now) / (1000 * 60 * 60 * 24)) : 0;
+
+    return { isInCooldown, daysRemaining, cooldownEndDate: cooldownEnd };
+  }, [donor?.lastDonation]);
+
+  // Auto-désactiver la disponibilité si en période de cooldown
+  useEffect(() => {
+    if (cooldownInfo.isInCooldown && donor?.isAvailable) {
+      setDonor(prev => prev ? { ...prev, isAvailable: false } : prev);
+      // Synchroniser avec le serveur
+      if (donorId) {
+        api.patch(`/donors/${donorId}/availability`, { isAvailable: false }).catch(() => {});
+        const currentUserJson = localStorage.getItem('user');
+        if (currentUserJson) {
+          const currentUser = JSON.parse(currentUserJson);
+          localStorage.setItem('user', JSON.stringify({ ...currentUser, isAvailable: false }));
+        }
+      }
+    }
+  }, [cooldownInfo.isInCooldown, donor?.isAvailable]);
+
   const donorBloodGroup = donor?.bloodGroup || storedUser?.bloodGroup || 'O+';
 
   const handleAvailabilityToggle = async () => {
     if (!donorId || !donor) return;
+
+    // Bloquer la réactivation si en période de cooldown
+    if (cooldownInfo.isInCooldown && !donor.isAvailable) {
+      setAvailabilityMessage(
+        `⏳ Vous ne pouvez pas vous rendre disponible avant ${cooldownInfo.daysRemaining} jour${cooldownInfo.daysRemaining > 1 ? 's' : ''}. Prochaine date d'éligibilité : ${cooldownInfo.cooldownEndDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}.`
+      );
+      setAvailabilityMessageType('error');
+      return;
+    }
 
     const nextAvailability = !donor.isAvailable;
     const currentUserJson = localStorage.getItem('user');
@@ -201,6 +324,13 @@ const DonorSpace = () => {
             <MapPin size={20} />
             Points de Collecte
           </button>
+          <button
+            className={`tab-button ${activeTab === 'classement' ? 'active' : ''}`}
+            onClick={() => navigate('/classement')}
+          >
+            <Trophy size={20} />
+            Classement
+          </button>
         </div>
         <div className="tabs-right">
           <button
@@ -244,7 +374,15 @@ const DonorSpace = () => {
                   </div>
 
                   <div className="header-info">
-                    <h1 className="donor-name">{donor.name}</h1>
+                    <div className="donor-name-row">
+                      <h1 className="donor-name">{donor.name}</h1>
+                      {badgeInfo && (
+                        <span className={`badge-label ${badgeInfo.classe}`} title={badgeInfo.message}>
+                          <span className="badge-emoji">{badgeInfo.emoji}</span>
+                          <span className="badge-titre">{badgeInfo.titre}</span>
+                        </span>
+                      )}
+                    </div>
                     <p className="donor-location">
                       <MapPin size={16} /> {donor.location}
                     </p>
@@ -267,19 +405,32 @@ const DonorSpace = () => {
                   </div>
                   <p className="card-label">Disponibilité</p>
                   <h2 className="card-value">
-                    {donor.isAvailable ? '✓ Disponible' : 'Indisponible'}
+                    {cooldownInfo.isInCooldown
+                      ? '⏳ En repos'
+                      : donor.isAvailable ? '✓ Disponible' : 'Indisponible'
+                    }
                   </h2>
 
-                  <label className="availability-switch">
+                  {cooldownInfo.isInCooldown && (
+                    <div className="cooldown-info">
+                      <p className="cooldown-days">{cooldownInfo.daysRemaining} jour{cooldownInfo.daysRemaining > 1 ? 's' : ''} restant{cooldownInfo.daysRemaining > 1 ? 's' : ''}</p>
+                      <p className="cooldown-date">Éligible le {cooldownInfo.cooldownEndDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+                    </div>
+                  )}
+
+                  <label className={`availability-switch ${cooldownInfo.isInCooldown ? 'switch-locked' : ''}`}>
                     <input
                       type="checkbox"
                       checked={donor.isAvailable}
                       onChange={handleAvailabilityToggle}
-                      disabled={isUpdatingAvailability}
+                      disabled={isUpdatingAvailability || cooldownInfo.isInCooldown}
                     />
                     <span className="switch-slider" />
                     <span className="availability-label">
-                      {donor.isAvailable ? 'Actif' : 'Indisponible'}
+                      {cooldownInfo.isInCooldown
+                        ? 'Verrouillé'
+                        : donor.isAvailable ? 'Actif' : 'Indisponible'
+                      }
                     </span>
                   </label>
 
@@ -327,12 +478,6 @@ const DonorSpace = () => {
                     <Heart size={64} className="empty-icon" />
                     <h3>Vous n'avez pas encore fait de don</h3>
                     <p>Chaque don compte ! Votre première contribution peut sauver des vies.</p>
-                    <button
-                      onClick={() => navigate('/donate')}
-                      className="donate-now-btn"
-                    >
-                      Faire mon premier don
-                    </button>
                   </div>
                 ) : (
                   <div className="donations-list">
@@ -379,6 +524,75 @@ const DonorSpace = () => {
                     )}
                   </div>
                 )}
+              </div>
+
+              {/* Section Confidentialité & Classement */}
+              <div className="privacy-section">
+                <div className="privacy-card">
+                  <div className="privacy-header">
+                    <Trophy size={22} className="privacy-icon" />
+                    <h3 className="privacy-title">Classement des Héros</h3>
+                  </div>
+                  <p className="privacy-description">
+                    Rendez votre profil visible dans le classement public pour inspirer d'autres donneurs.
+                  </p>
+                  <div className="privacy-toggle-row">
+                    <label className="privacy-switch">
+                      <input
+                        type="checkbox"
+                        checked={estPublic}
+                        onChange={async () => {
+                          if (isTogglingPrivacy) return;
+                          
+                          setPrivacyMessage('Mise à jour...');
+                          setPrivacyMessageType('info');
+                          setIsTogglingPrivacy(true);
+                          
+                          try {
+                            console.log('Tentative toggle confidentialité pour:', donorId);
+                            const response = await api.patch('/classement/confidentialite', { donorId });
+                            const nouvelEtat = response.data.est_public;
+                            setEstPublic(nouvelEtat);
+                            setPrivacyMessage(response.data.message);
+                            setPrivacyMessageType('success');
+                          } catch (err) {
+                            console.error('Erreur toggle confidentialité:', err);
+                            const errorMsg = err.response?.data?.message || 'Erreur de communication avec le serveur.';
+                            setPrivacyMessage(errorMsg);
+                            setPrivacyMessageType('error');
+                          } finally {
+                            setIsTogglingPrivacy(false);
+                            // Cacher le message après 3 secondes
+                            setTimeout(() => setPrivacyMessage(null), 3000);
+                          }
+                        }}
+                        disabled={isTogglingPrivacy}
+                      />
+                      <span className="switch-slider" />
+                      <span className="privacy-label-text">
+                        {estPublic ? (
+                          <><Eye size={14} /> Profil public</>
+                        ) : (
+                          <><EyeOff size={14} /> Profil privé</>
+                        )}
+                      </span>
+                    </label>
+                  </div>
+                  
+                  {privacyMessage && (
+                    <p className={`privacy-feedback ${privacyMessageType}`}>
+                      {privacyMessage}
+                    </p>
+                  )}
+
+                  <button
+                    className="classement-link-btn"
+                    onClick={() => navigate('/classement')}
+                  >
+                    <Trophy size={16} />
+                    Voir le classement
+                  </button>
+                </div>
               </div>
             </>
           ) : (
@@ -462,6 +676,26 @@ const DonorSpace = () => {
               )}
             </>
           )}
+        </div>
+      )}
+
+      {/* Toast notification de badge */}
+      {showBadgeToast && badgeInfo && (
+        <div className="badge-toast-overlay">
+          <div className={`badge-toast ${badgeInfo.classe}`}>
+            <div className="badge-toast-icon">{badgeInfo.emoji}</div>
+            <div className="badge-toast-content">
+              <h3 className="badge-toast-title">{badgeInfo.titre}</h3>
+              <p className="badge-toast-message">{badgeInfo.message}</p>
+            </div>
+            <button
+              className="badge-toast-close"
+              onClick={() => setShowBadgeToast(false)}
+            >
+              <X size={18} />
+              Fermer
+            </button>
+          </div>
         </div>
       )}
     </div>

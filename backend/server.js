@@ -14,6 +14,8 @@ const donorRoutes = require('./routes/donorRoutes');
 const alertRoutes = require('./routes/alertRoutes');
 const statsRoutes = require('./routes/statsRoutes');
 const hospitalRoutes = require('./routes/hospitalRoutes');
+const classementRoutes = require('./routes/classementRoutes');
+const stockRoutes = require('./routes/stockRoutes');
 
 const app = express();
 
@@ -31,6 +33,8 @@ app.use('/api/donors', donorRoutes);
 app.use('/api/alerts', alertRoutes);
 app.use('/api/stats', statsRoutes);
 app.use('/api/hospitals', hospitalRoutes);
+app.use('/api/classement', classementRoutes);
+app.use('/api/stock', stockRoutes);
 
 // Démarrage du serveur HTTP
 const PORT = process.env.PORT || 5000;

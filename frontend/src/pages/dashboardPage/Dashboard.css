@@ -746,6 +746,98 @@
     color: #991b1b;
 }
 
+/* --- STOCK INDICATORS --- */
+.stock-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.stock-item {
+    background: white;
+    padding: 10px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.stock-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.stock-bar-bg {
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.stock-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.stock-bar-fill.good { background: var(--success); }
+.stock-bar-fill.sufficient { background: var(--info); }
+.stock-bar-fill.near_low { background: var(--warning); }
+.stock-bar-fill.out_of_stock { background: var(--danger); }
+
+/* --- STOCK ALERTS SECTION --- */
+.alert-item.stock-alert {
+    border-left: 3px solid var(--warning);
+}
+
+.stock-near-btn {
+    background: var(--warning);
+    border: none;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+/* --- INDIVIDUAL MODAL SPECIFICS --- */
+.individual-modal-info {
+    background: #f1f5f9;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+}
+
+.info-row span:first-child {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.info-row span:last-child {
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.blood-badge-inline {
+    background: var(--danger);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+}
+
 /* --- RESPONSIVE --- */
 @media (max-width: 1100px) {
     .dashboard-content { grid-template-columns: 1fr; }
